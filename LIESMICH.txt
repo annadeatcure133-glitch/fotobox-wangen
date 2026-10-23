@@ -1,0 +1,48 @@
+Fotobox Wangen - Website (Fassung "lila", 21. Oktober 2026)
+===========================================================
+
+Inhalt
+------
+index.html   die komplette Seite
+img/         Bilder, Video und Logo
+
+Was in dieser Fassung geaendert wurde
+-------------------------------------
+- Menue: die Knoepfe ab "Anlaesse" taten nichts. Behoben.
+- Anfrageformular: die Links auf AGB und Datenschutzerklaerung
+  oeffneten nichts. Behoben.
+- "erklaere sie in zwei Minuten" ist raus.
+- Online-Galerie steht jetzt mit Preis in den Paketboxen:
+  + 39 EUR bei 200 und 400 Bildern, bei 800 Bildern inklusive.
+- Kundenstimme Amelie: Anlass auf Geburtstagsfeier korrigiert,
+  Zuordnung von "Studioleitung PEAKS Isny" auf "Geburtstagsfeier".
+- AGB: der Einschub "(nachfolgend Vermieter)" ist raus.
+- Impressum: Umsetzung der Website - Anna Schoener.
+
+ACHTUNG beim Veroeffentlichen
+-----------------------------
+Eine frühere Fassung dieser Datei behauptete, man koenne eine neue ZIP
+im Vercel-Dashboard auf dasselbe Projekt ziehen. Das stimmt nicht.
+Vercel schreibt dazu ausdruecklich: "Each drop creates a new project."
+Jeder Drop legt also ein NEUES Projekt an.
+
+Ein bestehendes Projekt aktualisiert man so:
+
+  npm i -g vercel
+  cd <dieser Ordner>
+  vercel --prod
+
+Beim ersten Mal: Team waehlen, dann "Link to existing project" mit JA
+beantworten und das bestehende Projekt auswaehlen. Die Domain bleibt.
+
+Oder - ohne Installation, dafuer mit Nacharbeit:
+  1. Ordner auf vercel.com/drop ziehen, neues Projekt entsteht
+  2. unter der neuen .vercel.app-Adresse pruefen
+  3. im ALTEN Projekt die Domains entfernen
+  4. im NEUEN Projekt dieselben Domains eintragen
+Das alte Projekt stehen lassen - es ist der Rueckweg.
+
+Eigene Domain
+-------------
+Im Projekt unter Settings - Domains eintragen. Die DNS-Eintraege bei
+STRATO bleiben unveraendert, solange beide Projekte im selben Team sind.

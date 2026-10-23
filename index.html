@@ -1,0 +1,1457 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fotobox mieten in Wangen im Allgäu – Fotobox Wangen</title>
+<meta name="description" content="Fotobox mieten in Wangen im Allgäu. Drei Pakete ab 299 €, Sofortausdruck vor Ort, Lieferung, Aufbau und Requisiten inklusive. Anfahrt bis 15 km kostenlos.">
+<link rel="canonical" href="https://fotobox-wangen.de/">
+<link rel="icon" href="img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: der 3D-Automat liegt fix hinter der Seite. Er baut sich auf, zählt runter, blitzt,
+   druckt, zerlegt sich beim Scrollen in seine Teile und dockt danach in die Ecke.
+   Schwarz auf Weiss, eine einzige Farbe am Lichtstreifen. */
+:root{
+  --paper:#ffffff; --ink:#0b0b0c; --ink-soft:#73737a; --rule:#e7e7ea; --glow:#2fd8ff;
+  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--mono);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit} button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+
+#scene{position:fixed;left:0;right:0;top:0;height:100vh;height:100lvh;z-index:10;pointer-events:none}
+#scene canvas{display:block;width:100%;height:100%}
+
+.topbar{position:fixed;left:0;right:0;top:0;z-index:40;display:flex;align-items:center;
+  justify-content:space-between;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,0px));
+  background:var(--paper);border-bottom:1px solid var(--rule)}
+#mark{width:62px;height:62px;flex:none;display:block}
+#mark img{display:block;width:100%;height:100%;object-fit:contain}
+.menu{border:1px solid var(--ink);border-radius:999px;padding:9px 18px;font-size:11px;letter-spacing:.14em}
+
+#stage{position:relative;z-index:20;pointer-events:none}
+#hero{height:92vh;height:92svh;min-height:460px;position:relative}
+#explode{height:105vh;height:105svh}
+.hint{position:absolute;left:0;right:0;bottom:26px;text-align:center;margin:0;
+  text-shadow:0 0 7px #fff,0 0 7px #fff,0 0 3px #fff}
+.hint .k{display:inline-block}
+
+#hots{position:fixed;inset:0;z-index:30;pointer-events:none}
+.hot{position:absolute;left:0;top:0;display:flex;align-items:center;gap:9px;will-change:transform,opacity;
+  white-space:nowrap;pointer-events:auto;opacity:0}
+.hot .dot{width:25px;height:25px;border-radius:50%;background:var(--ink);color:var(--paper);
+  display:grid;place-items:center;font-size:9px;font-weight:500;flex:none;position:relative}
+.hot .dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid var(--ink);
+  opacity:0;transform:scale(.8);transition:.35s}
+.hot:hover .dot::after,.hot.on .dot::after{opacity:.55;transform:scale(1)}
+.hot .chip{border:1px solid var(--ink);background:var(--paper);padding:6px 11px;font-size:10px;
+  letter-spacing:.11em;text-transform:uppercase}
+.hot.flip{flex-direction:row-reverse}
+
+#tags{position:fixed;inset:0;z-index:28;pointer-events:none}
+.tag{position:absolute;left:0;top:0;will-change:transform;font-size:9px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink);background:var(--paper);border:1px solid var(--ink);
+  padding:4px 9px;opacity:0;white-space:nowrap}
+
+.band{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:var(--paper);
+  overflow:hidden;position:relative;z-index:25;padding:15px 0}
+.track{display:flex;gap:46px;width:max-content;will-change:transform}
+.track span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px}
+section.block{padding-block:72px;background:var(--paper);position:relative;z-index:25}
+
+.cta{display:block;width:100%;background:var(--ink);color:var(--paper);padding:21px;font-size:12px;
+  letter-spacing:.18em;text-align:center;position:relative;overflow:hidden}
+.cta .t{position:relative;z-index:2;mix-blend-mode:difference}
+.cta .sweep{position:absolute;inset:0;background:var(--glow);transform:translateX(-101%);z-index:1}
+.cta-sub{display:flex;gap:26px;justify-content:center;margin-top:16px;font-size:11px;letter-spacing:.1em}
+
+/* Grosse Schrift braucht enge Laufweite, kleine eine weite. Ein Wert
+   fuer alle Groessen ist immer irgendwo falsch. */
+h2{font-size:clamp(22px,5.4vw,46px);font-weight:500;letter-spacing:-.018em;line-height:1.08;
+  margin:0 0 22px;text-align:center;text-wrap:balance}
+h2 .k{display:inline-block;white-space:pre}
+.lede{max-width:62ch;margin:0 auto;font-size:14px;line-height:1.75;color:#2a2a2e;text-align:center}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(172px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);margin-top:40px}
+.cell{background:var(--paper);padding:28px 20px;min-width:0;position:relative;overflow:hidden}
+.cell h3{margin:0 0 9px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.cell p{margin:0;font-size:12px;line-height:1.7;color:var(--ink-soft)}
+.cell .bar{position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--ink);
+  transform:scaleX(0);transform-origin:0 50%}
+
+.sec{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 18px;font-weight:500}
+.prices{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:34px}
+@media (min-width:760px){.prices{grid-template-columns:repeat(3,1fr)}}
+.price{background:var(--paper);padding:24px 20px;position:relative}
+.price .n{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+.price .v{font-size:clamp(30px,8vw,44px);font-weight:500;letter-spacing:-.02em;margin:7px 0 3px;line-height:1}
+.price .d{font-size:11.5px;color:var(--ink-soft);line-height:1.6}
+.center{text-align:center}
+.rail{display:flex;gap:10px;overflow-x:auto;padding:0 16px 4px;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.rail figure{margin:0;flex:0 0 76%;max-width:420px;scroll-snap-align:center}
+.rail img,.rail video{display:block;width:100%;height:340px;object-fit:cover;object-position:50% 30%;background:#f2f2f4}
+.stimme{display:grid;grid-template-columns:72px 1fr;gap:18px;align-items:start;margin-top:4px}.stimme img{width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:50% 28%;display:block;background:#f2f2f4}.stimme blockquote{margin:0;font-size:15px;line-height:1.6}.stimme+.stimme{margin-top:26px;padding-top:26px;border-top:1px solid var(--rule)}.stimme .who{margin-top:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}@media(min-width:760px){.stimme{grid-template-columns:96px 1fr;gap:26px}.stimme img{width:96px;height:96px}.stimme blockquote{font-size:17px}}.consent-ph{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;width:100%;height:340px;background:#f4f4f6;border:1px dashed #c9c9cf;box-sizing:border-box;padding:18px;text-align:center}.consent-ph b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#6a6a72;font-weight:500}.consent-ph span{font-size:11px;line-height:1.5;color:#8a8a92;max-width:230px}@media(min-width:760px){.consent-ph{height:420px}}.rail figcaption{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);padding-top:9px}
+@media (min-width:760px){.rail figure{flex:0 0 340px} .rail img,.rail video{height:420px}}
+.ueber{display:grid;gap:20px;align-items:start}
+@media (min-width:620px){.ueber{grid-template-columns:228px 1fr;gap:30px}}
+.ueber img{width:196px;height:196px;border-radius:50%;object-fit:cover;object-position:46% 42%;display:block;margin:0 auto;background:#f2f2f4}
+@media (min-width:620px){.ueber img{width:228px;height:228px;margin:0}}
+.ueber p{margin:0 0 12px;font-size:13px;line-height:1.72;color:#2a2a2e}
+.ueber .more{text-decoration:underline;font-size:11.5px;letter-spacing:.04em}
+.pic-janis{width:150px;height:150px;border-radius:50%;object-fit:cover;object-position:46% 42%;display:block}
+footer{border-top:1px solid var(--rule);padding:44px 16px 130px;text-align:center;font-size:11px;
+  letter-spacing:.1em;color:var(--ink-soft);background:var(--paper);position:relative;z-index:25}
+footer nav{margin-top:12px;display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+
+.bottombar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(3,1fr);
+  background:var(--paper);border-top:1px solid var(--ink);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bottombar a{padding:15px 6px;text-align:center;font-size:11px;letter-spacing:.1em;text-decoration:none}
+.bottombar a + a{border-left:1px solid var(--rule)}
+
+.scrim{position:fixed;inset:0;background:rgba(11,11,12,.3);z-index:45;opacity:0;pointer-events:none}
+.scrim.open{pointer-events:auto}
+/* Rueckmeldung gehoert auf den Druck, nicht auf das Loslassen. */
+.menu,.send,.more,.panel .close,.bottombar a,footer nav a,.hot .dot,.rail figure{
+  transition:transform 110ms cubic-bezier(.2,.7,.3,1)}
+.menu:active,.send:active,.more:active,.panel .close:active,.bottombar a:active,
+footer nav a:active{transform:scale(.96)}
+.hot:active .dot{transform:scale(.9)}
+.rail figure:active{transform:scale(.985)}
+/* Am Rechner soll sichtbar sein, worueber die Maus steht. Nur dort, wo es
+   wirklich einen Zeiger gibt - auf dem Handy waere das ein Geisterzustand. */
+@media (hover:hover) and (pointer:fine){
+  .rail figure{transition:transform 260ms cubic-bezier(.2,.7,.3,1)}
+  .rail figure:hover{transform:translateY(-4px)}
+  .rail img,.rail video{transition:filter 260ms ease}
+  .rail figure:hover img,.rail figure:hover video{filter:brightness(1.05)}
+  .price{transition:background 180ms ease}
+  .price:hover{background:#fafafb}
+  .cell{transition:background 200ms ease}
+  .cell:hover{background:#fafafb}
+  footer nav a,.more,.cta-sub a{transition:opacity 160ms ease}
+  footer nav a:hover,.more:hover,.cta-sub a:hover{opacity:.55}
+  .menu:hover,.send:hover{opacity:.85}
+  .hot:hover .dot{transform:scale(1.12)}
+}
+/* Schwebende Flaeche: durchscheinend mit Unschaerfe, heller Lichtkante
+   oben, tieferer Schatten. Liegt dadurch ueber der Seite statt darauf. */
+.panel{position:fixed;z-index:50;background:rgba(255,255,255,.82);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+  border:1px solid rgba(11,11,12,.16);border-top-color:rgba(255,255,255,.75);
+  box-shadow:0 26px 64px -14px rgba(11,11,12,.3);left:16px;right:16px;
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));max-height:70vh;overflow:auto;
+  overscroll-behavior:contain;touch-action:pan-y;will-change:transform;
+  padding:14px 22px 28px;transform:translateY(1400px)}
+/* Griff: macht die Wischgeste ueberhaupt erst sichtbar. */
+.panel::before{content:"";display:block;position:sticky;top:0;z-index:3;
+  width:40px;height:4px;margin:0 auto 16px;border-radius:2px;background:rgba(11,11,12,.2)}
+@media (min-width:760px){.panel::before{display:none}}
+@media (min-width:760px){.panel{left:auto;right:28px;top:50%;bottom:auto;width:392px;max-height:72vh;
+  transform:translate(120%,-50%)}}
+.panel .num{font-size:10px;letter-spacing:.2em;color:var(--ink-soft)}
+.panel h3{margin:8px 0 16px;font-size:17px;font-weight:600;letter-spacing:.05em}
+.panel ul{margin:0;padding:0;list-style:none;display:grid;gap:11px}
+.panel li{font-size:12.5px;line-height:1.6;padding-left:17px;position:relative;color:#2a2a2e}
+.panel li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:1px;background:var(--ink)}
+.panel .close{position:absolute;top:14px;right:16px;font-size:11px;letter-spacing:.12em}
+.panel{max-height:78svh}
+#panelBody p{margin:0 0 12px;font-size:12.5px;line-height:1.65;color:#2a2a2e}
+#panelBody p:last-child{margin-bottom:0}
+#panelBody h4{margin:20px 0 9px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);font-weight:500}
+#panelBody h4:first-child{margin-top:0}
+#panelBody h5{margin:16px 0 6px;font-size:12px;font-weight:600;letter-spacing:.03em}
+.pak{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);margin:0 0 12px}
+.pak div{background:var(--paper);display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:13px 14px}
+.pak b{font-size:13px;font-weight:600;letter-spacing:.03em}
+.pak span{font-size:15px;font-weight:600;white-space:nowrap}
+.fine{font-size:10.5px;line-height:1.6;color:var(--ink-soft)}
+.qa{border-top:1px solid var(--rule)}
+.qa summary{cursor:pointer;list-style:none;padding:12px 0;font-size:12.5px;font-weight:600;letter-spacing:.02em;
+  display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";color:var(--ink-soft);font-weight:400}
+.qa[open] summary::after{content:"\2013"}
+.qa p{padding:0 0 13px}
+.lgl{font-size:11.5px;line-height:1.7;color:#2a2a2e}
+.lgl b{display:block;margin:15px 0 4px;font-size:11.5px;letter-spacing:.02em}
+.lgl .todo{display:block;background:#fff6d6;border:1px solid #e3d08a;padding:9px 11px;margin:9px 0;font-size:11px;line-height:1.55}
+.nav-sheet{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.nav-sheet button{background:var(--paper);text-align:left;padding:15px 14px;font-size:12.5px;letter-spacing:.06em;width:100%}
+.frm{display:grid;gap:11px}
+.frm label{display:grid;gap:5px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.frm input,.frm textarea,.frm select{font:inherit;font-size:13px;color:var(--ink);background:var(--paper);
+  border:1px solid var(--rule);padding:11px 12px;border-radius:0;width:100%}
+.frm input:focus,.frm textarea:focus,.frm select:focus{outline:none;border-color:var(--ink)}
+.frm textarea{min-height:78px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips button{border:1px solid var(--rule);padding:8px 12px;font-size:11px;letter-spacing:.06em}
+.chips button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.agbrow{display:flex;gap:9px;align-items:flex-start;font-size:11px;line-height:1.5;color:#2a2a2e;
+  letter-spacing:0;text-transform:none}
+.agbrow input{width:17px;height:17px;flex:none;margin-top:1px;accent-color:var(--ink)}
+.agbrow a{text-decoration:underline}
+.send{background:var(--ink);color:var(--paper);padding:15px;font-size:11px;letter-spacing:.18em;width:100%}
+a.send{display:block;box-sizing:border-box;text-align:center;text-decoration:none}
+.send.alt{background:var(--paper);color:var(--ink);border:1px solid var(--ink)}
+.ok .send{margin-top:10px}
+.ok p{margin:10px 0 0}
+.err{color:#a3202a;font-size:11px;margin-top:-4px}
+.ok{border:1px solid var(--ink);padding:18px 16px}
+.ok h5{margin-top:0}
+
+.proto{position:fixed;left:12px;bottom:calc(60px + env(safe-area-inset-bottom,0px));z-index:35;
+  font-size:9px;letter-spacing:.18em;color:var(--ink-soft);pointer-events:none;
+  background:var(--paper);border:1px solid var(--rule);padding:4px 8px}
+.flash{position:fixed;inset:0;background:#fff;z-index:38;opacity:0;pointer-events:none}
+
+/* Handy: kurzer Scrollweg, grosse Tippflaechen, alles eine Spur kompakter */
+@media (max-width:759px){
+  #hero{height:88svh;min-height:400px}
+  #explode{height:80svh}
+  .topbar{padding:9px 13px;padding-top:calc(9px + env(safe-area-inset-top,0px))}
+  #mark{width:50px;height:50px}
+  .menu{padding:8px 14px;font-size:10px}
+  /* Auf dem Handy steht der Hinweis oben in der freien Flaeche, unten deckt ihn der Automat zu */
+  .hint{position:fixed;top:0;bottom:auto;padding:0 16px;font-size:10.5px}
+  .hot{padding:7px;margin:-7px}
+  .hot .dot{width:30px;height:30px;font-size:10px}
+  .hot .chip{padding:6px 9px;font-size:9.5px;letter-spacing:.08em}
+  .tag{font-size:8px;padding:3px 7px;letter-spacing:.14em}
+  .band{padding:11px 0}
+  .track{gap:30px}
+  section.block{padding-block:40px}
+  .cta{padding:18px;font-size:11px;letter-spacing:.14em}
+  h2{margin-bottom:16px}
+  .lede{font-size:13px;line-height:1.65}
+  .grid{grid-template-columns:1fr 1fr;margin-top:26px}
+  .cell{padding:17px 13px}
+  .cell h3{font-size:10.5px;letter-spacing:.09em;margin-bottom:7px}
+  .cell p{font-size:11px;line-height:1.55}
+  footer{padding:30px 16px 104px}
+  .panel{max-height:62svh;padding:22px 18px 24px}
+
+  /* Lesbarkeit: Fliesstext in Mono nicht unter 12px */
+  .cell p{font-size:12px;line-height:1.6}
+  .price .d{font-size:12.5px}
+  .fine{font-size:11px}
+  .ueber p{font-size:13.5px}
+  #panelBody p,.panel li{font-size:13.5px}
+  .qa summary{font-size:13.5px;padding:14px 0}
+
+  /* Preise: kompakte Zeilen statt drei hoher Kaesten */
+  .prices{margin-top:26px}
+  .price{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:12px;padding:16px 16px 15px}
+  .price .n{font-size:11px;letter-spacing:.12em;color:var(--ink)}
+  .price .v{font-size:28px;margin:0;grid-row:1;grid-column:2}
+  .price .d{grid-column:1 / -1;margin-top:6px}
+
+  /* Kundenstimmen: Zitat etwas ruhiger, Bild kleiner */
+  .stimme{grid-template-columns:52px 1fr;gap:14px}
+  .stimme img{width:52px;height:52px}
+  .stimme blockquote{font-size:13.5px;line-height:1.62}
+  .stimme .who{line-height:1.6}
+
+  /* Galerie: naechstes Bild deutlich anschneiden, damit klar ist, dass man wischen kann */
+  .rail figure{flex-basis:80%}
+  .rail img,.rail video,.consent-ph{height:min(380px,58svh)}
+
+  /* Tippflaechen mind. 44px */
+  .cta-sub{gap:10px;margin-top:10px}
+  .cta-sub a{padding:12px 10px}
+  footer nav{gap:4px}
+  footer nav a{padding:10px 8px}
+  footer > div:nth-child(3) a{display:inline-block;padding:8px 0}
+  .bottombar a{padding:16px 6px;font-size:12px}
+  .nav-sheet button{padding:16px 14px;font-size:13.5px}
+  .panel .close{padding:8px;margin:-8px}
+  .chips button{padding:10px 13px;font-size:12px}
+
+  /* iOS zoomt bei Eingabefeldern unter 16px automatisch rein */
+  .frm input,.frm textarea,.frm select{font-size:16px;padding:12px}
+  .agbrow{font-size:12px}
+  .agbrow input{width:22px;height:22px;margin-top:0}
+  .send{padding:17px;font-size:12px}
+}
+
+/* Notfall: wenn Three.js/GSAP nicht laden, keine leeren Bildschirme zeigen */
+.fallback{display:none}
+html.no3d #explode{display:none}
+/* Wer weniger Transparenz oder mehr Kontrast eingestellt hat, bekommt
+   eine feste Flaeche statt des Materials. */
+@media (prefers-reduced-transparency: reduce){
+  .panel{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media (prefers-contrast: more){
+  .panel{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;
+    border:1px solid var(--ink);box-shadow:none}
+  .scrim{background:rgba(11,11,12,.55)}}
+html.no3d #hero{height:auto;min-height:0;padding:120px 0 40px}
+html.no3d #hero .hint{display:none}
+html.no3d #scene{display:none}
+html.no3d .fallback{display:block;text-align:center;padding:0 20px}
+html.no3d .fallback h1{font-size:clamp(28px,7vw,54px);font-weight:500;letter-spacing:-.02em;margin:0 0 14px}
+html.no3d .fallback p{color:var(--ink-soft);font-size:13px;margin:0}
+
+/* Zusatzpreis Online-Galerie in den Paketboxen */
+.price .galerie{ display:inline-block; margin-top:6px; font-weight:600; letter-spacing:.01em; opacity:.9; }
+.price .galerie--frei{ opacity:1; }
+</style>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Fotobox Wangen">
+<meta property="og:title" content="Fotobox mieten in Wangen im Allgäu">
+<meta property="og:description" content="Drei Pakete ab 299 €, Sofortausdruck vor Ort, Lieferung, Aufbau und Requisiten inklusive.">
+<meta property="og:url" content="https://fotobox-wangen.de/">
+<meta property="og:image" content="https://fotobox-wangen.de/img/vorschau.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Fotobox Wangen – Fotobox mieten im Allgäu, ab 299 Euro">
+<meta property="og:locale" content="de_DE">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://fotobox-wangen.de/img/vorschau.jpg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"LocalBusiness","name":"Fotobox Wangen",
+"description":"Fotobox mieten f\u00fcr Hochzeiten, Firmenfeiern, Geburtstage und Vereinsfeste.",
+"url":"https://fotobox-wangen.de/","telephone":"+4915202126006","email":"anfrage@fotobox-wangen.de",
+"address":{"@type":"PostalAddress","streetAddress":"Johannes-Jung-Str. 4","postalCode":"88239",
+"addressLocality":"Wangen im Allg\u00e4u","addressCountry":"DE"},
+"areaServed":"Allg\u00e4u","priceRange":"299-499 EUR",
+"founder":{"@type":"Person","name":"Janis Schorer"}}
+</script>
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+</head>
+<body>
+<div id="scene"></div>
+<div id="tags"></div>
+<div id="hots"></div>
+<div class="flash" id="flash"></div>
+
+<header class="topbar">
+  <button id="mark" aria-label="Fotobox Wangen — nach oben">
+    <img src="img/logo.png" alt="Fotobox Wangen" width="320" height="320">
+  </button>
+  <button class="menu">MENÜ</button>
+</header>
+
+<div id="stage">
+  <section id="hero">
+    <div class="fallback">
+      <h1>Fotobox mieten in Wangen im Allgäu</h1>
+      <p>Sofortausdruck, Requisiten, Lieferung und Aufbau inklusive. Ab 299 €.</p>
+    </div>
+    <p class="hint label" id="hint">Tippe auf die Nummern</p>
+  </section>
+  <section id="explode"></section>
+</div>
+
+<div class="band"><div class="track" id="track"></div></div>
+
+<section class="block" id="pakete">
+  <div class="wrap">
+    <h2 id="h2">Fotobox mieten in Wangen im Allgäu</h2>
+    <p class="lede">Für Hochzeiten, Firmenfeiern, Geburtstage und Vereinsfeste. Drei Pakete – der Unterschied
+      ist die Anzahl der Bilder, die ihr vor Ort ausgedruckt mitnehmt.</p>
+    <div class="prices">
+      <div class="price"><div class="n">200 Bilder</div><div class="v">299 €</div>
+        <div class="d">Lieferung, Aufbau, Einweisung, Abbau, Requisiten und Sofortausdruck inklusive.<br><span class="galerie">Online-Galerie + 39 &euro;</span></div></div>
+      <div class="price"><div class="n">400 Bilder</div><div class="v">379 €</div>
+        <div class="d">Für Feiern, bei denen die Box den ganzen Abend läuft.<br><span class="galerie">Online-Galerie + 39 &euro;</span></div></div>
+      <div class="price"><div class="n">800 Bilder</div><div class="v">499 €</div>
+        <div class="d">Für große Feste – damit niemand vor dem Drucker wartet.<br><span class="galerie galerie--frei">Online-Galerie inklusive</span></div></div>
+    </div>
+    <p class="fine center" style="margin-top:14px">Alle Preise sind Endpreise, Kleinunternehmer nach § 19 UStG.
+      Anfahrt bis 15 km ab Wangen kostenlos. 100 € Reservierungsgebühr, wird auf den Mietpreis angerechnet.</p>
+  </div>
+</section>
+
+<section class="block" id="galerie" style="border-top:1px solid var(--rule);padding-inline:0">
+  <div class="wrap"><p class="sec">So sieht das aus</p></div>
+  <div class="rail">
+    <figure><video src="img/druck.mp4" poster="img/druck-poster.webp" width="506" height="900" muted loop playsinline autoplay
+      preload="metadata" aria-label="Der Fotostreifen kommt aus dem Drucker"></video>
+      <figcaption>Sofortausdruck – direkt vor Ort</figcaption></figure>
+    <figure><img src="img/aufbau.webp" alt="Die aufgebaute Fotobox mit Drucker im PEAKS-Studio" loading="lazy" width="676" height="900" decoding="async">
+      <figcaption>Aufgebaut und startklar</figcaption></figure>
+    <figure data-consent="Fotostreifen PEAKS"><img src="img/streifen.webp" alt="Fertiger Fotostreifen mit Logo in der Hand" loading="lazy" width="676" height="900" decoding="async">
+      <figcaption>Euer Logo auf jedem Streifen</figcaption></figure>
+    <figure data-consent="Firmenevent PEAKS"><img src="img/event-peaks.webp" alt="Gäste an der Fotobox bei einem Firmenevent" loading="lazy" width="676" height="900" decoding="async">
+      <figcaption>Firmenevent</figcaption></figure>
+    <figure data-consent="Privatfeier Scheune – Kind im Bild"><img src="img/scheune.webp" alt="Gäste mit Requisiten an der Fotobox in einer Scheune" loading="lazy" width="676" height="900" decoding="async">
+      <figcaption>Privatfeier mit Requisiten</figcaption></figure>
+    <figure data-consent="Fotostreifen in Händen"><img src="img/streifen-faecher.webp" alt="Mehrere Fotostreifen in Händen" loading="lazy" width="676" height="900" decoding="async">
+      <figcaption>Jeder nimmt etwas mit</figcaption></figure>
+    <figure><img src="img/musikfescht.webp" alt="Die Fotobox draußen beim Musikfescht" loading="lazy" width="676" height="900" decoding="async">
+      <figcaption>Auch draußen, unter Dach</figcaption></figure>
+  </div>
+</section>
+<script>
+/* ------------------------------------------------------------------
+   FREIGABE-SCHALTER
+   Auf den Eventfotos sind Gaeste erkennbar; beim Scheunen-Bild ein Kind.
+   Laut Unterlagen (Teil 5) duerfen die Bilder erst online, wenn die
+   Einwilligung der abgebildeten Personen schriftlich vorliegt.
+   Sobald sie da ist: naechste Zeile auf true setzen. Sonst nichts aendern.
+------------------------------------------------------------------- */
+var GAESTEFOTOS_FREIGEGEBEN = true;
+
+(function () {
+  if (GAESTEFOTOS_FREIGEGEBEN) return;
+  var figs = document.querySelectorAll('figure[data-consent]');
+  for (var i = 0; i < figs.length; i++) {
+    var f = figs[i], img = f.querySelector('img');
+    if (!img) continue;
+    img.removeAttribute('src');
+    var ph = document.createElement('div');
+    ph.className = 'consent-ph';
+    var b = document.createElement('b'); b.textContent = 'Foto zurueckgehalten';
+    var s = document.createElement('span');
+    s.textContent = f.getAttribute('data-consent') + ' \u2013 wartet auf die Einwilligung der abgebildeten Personen.';
+    ph.appendChild(b); ph.appendChild(s);
+    f.replaceChild(ph, img);
+  }
+})();
+</script>
+
+
+<section class="block" id="anlaesse" style="border-top:1px solid var(--rule)">
+  <div class="wrap">
+    <p class="sec">Anlässe</p>
+    <div class="grid" style="margin-top:0">
+      <div class="cell"><h3>Hochzeit</h3><p>Gästebuch zum Mitnehmen – jeder Streifen geht mit nach Hause.</p><span class="bar"></span></div>
+      <div class="cell"><h3>Firmenfeier</h3><p>Euer Logo auf jedem Druck, Layout nach Absprache.</p><span class="bar"></span></div>
+      <div class="cell"><h3>Geburtstag</h3><p>Requisitenkiste dabei, Aufbau in zwanzig Minuten.</p><span class="bar"></span></div>
+      <div class="cell"><h3>Vereinsfest</h3><p>Robust genug fürs Zelt, läuft den ganzen Abend ohne Betreuung.</p><span class="bar"></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="ueber" style="border-top:1px solid var(--rule)">
+  <div class="wrap">
+    <p class="sec">Über mich</p>
+    <div class="ueber">
+      <img src="img/janis-portrait.webp" alt="Janis Schorer" width="468" height="468" decoding="async">
+      <div>
+        <p>Hi, ich bin Janis. Ich bin 20, komme aus Wangen im Allgäu und bin selbständiger Fotograf.
+          Meine erste Hochzeit habe ich mit 16 fotografiert.</p>
+        <p>Ich liefere die Box selbst, baue sie auf, erkläre sie kurz und baue sie am Ende
+          wieder ab. Während eurer Veranstaltung bin ich telefonisch erreichbar.</p>
+        <a href="#" class="more" data-open="ueber">Mehr über mich</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="stimmen" style="border-top:1px solid var(--rule)">
+  <div class="wrap">
+    <p class="sec">Kundenstimmen</p>
+    <div class="stimme" id="stimme-amelie">
+      <img src="img/amelie.webp" alt="Amelie Engel" width="224" height="224" decoding="async">
+      <div>
+        <blockquote>&bdquo;Wir hatten die Fotobox bei unserer Geburtstagsfeier und waren vom ersten Moment
+          an begeistert. Die G&auml;ste standen den ganzen Abend an, und jeder ist mit seinem Streifen
+          in der Hand nach Hause gegangen. Jederzeit wieder.&ldquo;</blockquote>
+        <div class="who">Amelie Engel &middot; Geburtstagsfeier</div>
+      </div>
+    </div>
+    <div class="stimme">
+      <img src="img/felix.webp" alt="Felix Sch&uuml;tt" width="224" height="224" decoding="async">
+      <div>
+        <blockquote>&bdquo;Aufbau, Betreuung, Abbau &ndash; lief komplett, ohne dass ich mich um
+          irgendetwas k&uuml;mmern musste. Die Box war der Hit des Abends, und am Ende hatte jeder
+          etwas zum Mitnehmen. Buche ich definitiv wieder.&ldquo;</blockquote>
+        <div class="who">Felix Sch&uuml;tt &middot; Gesch&auml;ftsf&uuml;hrer, Influencer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ------------------------------------------------------------------
+   KUNDENSTIMME AMELIE
+   Der Anlass ist am 21.10.2026 korrigiert worden: die Box stand auf Amelies
+   Geburtstagsfeier, nicht bei einem Studio-Event. Zuordnung entsprechend von
+   "Studioleitung PEAKS Isny" auf "Geburtstagsfeier" geaendert.
+
+   Offen: Das Zitat ist weiterhin der Entwurf aus den Unterlagen und von
+   Amelie nie schriftlich freigegeben. Auf false setzen blendet es aus.
+
+   Felix bleibt davon unberuehrt - sein Zitat ist in Ordnung.
+------------------------------------------------------------------- */
+var STIMME_AMELIE_FREIGEGEBEN = true;
+(function () {
+  if (STIMME_AMELIE_FREIGEGEBEN) return;
+  var s = document.getElementById('stimme-amelie');
+  if (s && s.parentNode) s.parentNode.removeChild(s);
+})();
+</script>
+
+<section class="block" style="border-top:1px solid var(--rule)">
+  <div class="wrap">
+    <button class="cta" id="cta" data-open="anfrage"><span class="sweep"></span><span class="t">Jetzt Termin anfragen</span></button>
+    <div class="cta-sub"><a href="https://wa.me/4915202126006" target="_blank" rel="noopener">WhatsApp</a><a href="tel:+4915202126006">0152 02126006</a></div>
+  </div>
+</section>
+
+<footer id="kontakt">
+  <div>Fotobox Wangen · Janis Schorer</div>
+  <div style="margin-top:8px">Johannes-Jung-Str. 4 · 88239 Wangen im Allgäu</div>
+  <div style="margin-top:8px"><a href="mailto:anfrage@fotobox-wangen.de">anfrage@fotobox-wangen.de</a></div>
+  <nav>
+    <a href="#" data-open="impressum">Impressum</a>
+    <a href="#" data-open="datenschutz">Datenschutz</a>
+    <a href="#" data-open="agb">AGB</a>
+    <a href="#" data-open="kontakt">Kontakt</a>
+  </nav>
+  <div style="margin-top:14px">© 2026 Fotobox Wangen</div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle">
+  <button class="close" id="panelClose">Schliessen ✕</button>
+  <div class="num" id="panelNum">01</div>
+  <h3 id="panelTitle">Pakete &amp; Preise</h3>
+  <div id="panelBody"></div>
+</aside>
+
+<nav class="bottombar">
+  <a href="tel:+4915202126006">Anrufen</a>
+  <a href="https://wa.me/4915202126006" target="_blank" rel="noopener">WhatsApp</a>
+  <a href="#" data-open="anfrage">Anfragen</a>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  /* Wenn eine Bibliothek oder das 3D scheitert: statt leerer Seite die Textfassung zeigen. */
+  function fallback(err) {
+    if (err) { try { console.error('Motion aus:', err); } catch (e) {} }
+    document.documentElement.className += ' no3d';
+    try { legalFallback(); } catch (e) {}
+    var t = document.getElementById('track');
+    if (t && !t.children.length) {
+      for (var r = 0; r < 4; r++)
+        ['ab 299 €','Sofortausdruck vor Ort','Lieferung & Aufbau inklusive','Requisiten dabei','Personalisierte Streifen','Anfahrt bis 15 km frei','Wangen im Allgäu']
+          .forEach(function (f) { var s = document.createElement('span'); s.textContent = f + '  ·'; t.appendChild(s); });
+    }
+  }
+var LEGAL = {
+  impressum: `<div class="lgl">
+<b>Angaben gemäß § 5 DDG</b>
+<p>Janis Schorer<br>Ad-Motion<br>Johannes-Jung-Str. 4<br>88239 Wangen im Allgäu</p>
+<b>Kontakt</b>
+<p>Telefon: <a href="tel:+4915202126006">0152 02126006</a><br>E-Mail: <a href="mailto:anfrage@fotobox-wangen.de">anfrage@fotobox-wangen.de</a></p>
+<b>Umsetzung der Website</b>
+<p>Anna Sch&ouml;ner</p>
+<b>Verbraucherstreitbeilegung</b>
+<p>Ich bin nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+</div>`,
+  datenschutz: `<div class="lgl">
+<b>1. Verantwortliche Stelle</b>
+<p>Janis Schorer, Ad-Motion, Johannes-Jung-Str. 4, 88239 Wangen im Allgäu, Telefon 0152 02126006, anfrage@fotobox-wangen.de</p>
+<b>2. Hosting</b>
+<p>Diese Website wird von der Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, USA, gehostet und über deren weltweites Auslieferungsnetz bereitgestellt. Beim Aufruf verarbeitet der Anbieter Server-Logfiles: IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, Browser und Betriebssystem. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO, unser berechtigtes Interesse am sicheren Betrieb der Seite.</p>
+<p>Mit Vercel besteht ein Auftragsverarbeitungsvertrag nach Art. 28 DSGVO. Dabei können personenbezogene Daten in die USA übermittelt werden. Vercel ist unter dem EU-US Data Privacy Framework zertifiziert; für Übermittlungen in die USA liegt damit ein Angemessenheitsbeschluss der Europäischen Kommission vor.</p>
+<b>3. Kontaktaufnahme</b>
+<p>Wenn Sie uns über das Formular oder per E-Mail schreiben, verarbeiten wir die angegebenen Daten, um Ihre Anfrage zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO bei einer Buchungsanfrage, sonst Art. 6 Abs. 1 lit. f DSGVO. Anfragen löschen wir, sobald sie erledigt sind und keine Aufbewahrungsfristen entgegenstehen.</p>
+<b>4. Cookies und Reichweitenmessung</b>
+<p>Diese Website setzt keine Cookies und speichert nichts in Ihrem Browser. Es kommen keine Analyse-, Statistik- oder Tracking-Werkzeuge zum Einsatz und es findet keine Reichweitenmessung statt. Ein Einwilligungsbanner ist deshalb nicht erforderlich.</p><p>Beim Aufruf werden zwei technische Bestandteile von fremden Servern nachgeladen. Dabei wird Ihre IP-Adresse an den jeweiligen Anbieter übertragen:</p><p>— die Schrift IBM Plex Mono über Google Fonts (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland; eine Übermittlung an Google LLC in den USA ist dabei möglich);<br>— die Programmbibliotheken three.js und GSAP über den Dienst cdnjs (Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, USA).</p><p>Beide dienen allein der fehlerfreien und ansprechenden Darstellung dieser Seite. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO, unser berechtigtes Interesse an einer einheitlichen und funktionierenden Darstellung. Google LLC und Cloudflare, Inc. sind unter dem EU-US Data Privacy Framework zertifiziert.</p>
+<b>5. Fotos aus der Fotobox</b>
+<p>Bei einer Veranstaltung ist der Veranstalter für die Aufnahmen datenschutzrechtlich verantwortlich; wir stellen die Technik und verarbeiten die Bilder in seinem Auftrag. Gäste werden vor Ort durch einen Aushang an der Box über die Aufnahme informiert. Die Ausdrucke erhalten die Gäste sofort. Auf Wunsch stellen wir zusätzlich eine Online-Galerie bereit; sie ist nur über einen nicht öffentlichen Link erreichbar und wird vier Wochen nach der Veranstaltung gelöscht. Einzelne Bilder veröffentlichen wir nur mit ausdrücklicher Einwilligung der abgebildeten Personen.</p>
+<b>6. Ihre Rechte</b>
+<p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch nach Art. 15 bis 21 DSGVO. Eine E-Mail an anfrage@fotobox-wangen.de genügt. Außerdem können Sie sich beim Landesbeauftragten für den Datenschutz und die Informationsfreiheit Baden-Württemberg beschweren.</p>
+</div>`,
+  agb: `<div class="lgl">
+<b>§ 1 Geltungsbereich und Vertragspartner</b>
+<p>Diese Bedingungen gelten für alle Vermietungen der Fotobox durch Janis Schorer, Fotobox Wangen, Johannes-Jung-Str. 4, 88239 Wangen im Allgäu. Abweichende Bedingungen des Mieters gelten nur, wenn der Vermieter ihnen in Textform zustimmt.</p>
+<b>§ 2 Buchung und Vertragsschluss</b>
+<p>Anfragen über das Formular auf fotobox-wangen.de oder per E-Mail an anfrage@fotobox-wangen.de sind unverbindlich. Der Vermieter bestätigt den Termin mit einem Angebot und einem Mietvertrag in Textform. Der Vertrag kommt zustande, sobald der Mieter diesen in Textform bestätigt.</p>
+<b>§ 3 Reservierungsgebühr und Zahlung</b>
+<p>Mit der Buchung wird eine Reservierungsgebühr von 100 € fällig, zahlbar innerhalb von 14 Tagen. Der Termin ist erst mit Eingang dieser Gebühr fest reserviert. Die Gebühr wird vollständig auf den Mietpreis angerechnet.</p>
+<p>Der Restbetrag ist am Veranstaltungstag vor Ort oder nach Rechnungsstellung per Überweisung zu zahlen.</p>
+<p>Der Vermieter ist Kleinunternehmer im Sinne von § 19 UStG; alle Preise sind Endpreise, Umsatzsteuer wird nicht ausgewiesen.</p>
+<b>§ 4 Lieferung, Aufbau und Abbau</b>
+<p>Lieferung, Aufbau, Einweisung und Abbau sind im Mietpreis enthalten. Im Umkreis von 15 km ab Wangen im Allgäu ist die Anfahrt kostenlos. Für weiter entfernte Orte weist der Vermieter die Anfahrtspauschale im Angebot aus.</p>
+<b>§ 5 Mietdauer</b>
+<p>Die Fotobox wird tageweise vermietet. Beginn und Ende der Nutzung werden vor der Veranstaltung vereinbart und im Mietvertrag festgehalten.</p>
+<b>§ 6 Pflichten des Mieters</b>
+<p>Der Mieter stellt einen Stromanschluss (230 V) in höchstens 10 m Entfernung, eine ebene und trockene Stellfläche von mindestens 2 × 2 m sowie eine freie Zufahrt für Auf- und Abbau bereit. Er weist seine Gäste in die sachgemäße Nutzung ein.</p>
+<b>§ 7 Nutzung im Freien</b>
+<p>Den Standort wählt der Mieter. Für den Außeneinsatz empfiehlt der Vermieter einen überdachten, wind- und wettergeschützten Platz ohne direkte Sonneneinstrahlung. Entscheidet sich der Mieter für einen ungeschützten Standort, trägt er die Verantwortung für Schäden und Ausfälle, die dort durch Witterungseinflüsse entstehen.</p>
+<b>§ 8 Nutzung der Fotobox</b>
+<p>Die Fotobox darf ausschließlich für die vereinbarte Veranstaltung genutzt werden. Ohne Absprache mit dem Vermieter darf sie nicht versetzt, geöffnet, verändert oder an Dritte weitergegeben werden. Sie bleibt Eigentum des Vermieters.</p>
+<b>§ 9 Stornierung durch den Mieter</b>
+<p>Der Mieter kann die Buchung jederzeit in Textform stornieren. Die Reservierungsgebühr von 100 € wird einbehalten, weitere Kosten entstehen nicht. Wird innerhalb von zwölf Monaten ein Ersatztermin gebucht und ist dieser verfügbar, wird die Gebühr auf den neuen Termin angerechnet.</p>
+<b>§ 10 Absage durch den Vermieter</b>
+<p>Kann der Vermieter die Leistung aus Gründen, die er nicht zu vertreten hat, nicht erbringen – etwa höhere Gewalt, Krankheit oder ein technischer Totalausfall –, wird die Reservierungsgebühr vollständig erstattet.</p>
+<b>§ 11 Haftung des Mieters</b>
+<p>Der Mieter haftet für Schäden, Verluste und Defekte, die er oder seine Gäste während der Mietdauer schuldhaft verursachen, insbesondere durch unsachgemäße Nutzung oder unzureichende Sicherung der Fotobox. Veränderungen oder Verschlechterungen durch vertragsgemäßen Gebrauch hat der Mieter nicht zu vertreten. Ersetzt werden die erforderlichen Reparaturkosten, bei einem Totalschaden der Zeitwert.</p>
+<b>§ 12 Haftung des Vermieters</b>
+<p>Der Vermieter haftet unbeschränkt bei Vorsatz und grober Fahrlässigkeit sowie bei der Verletzung von Leben, Körper oder Gesundheit. Bei einfacher Fahrlässigkeit haftet er nur für die Verletzung wesentlicher Vertragspflichten und der Höhe nach begrenzt auf den vereinbarten Mietpreis. Fällt die Fotobox während der Veranstaltung technisch aus, wird der Mietpreis anteilig für die Ausfallzeit erstattet.</p>
+<b>§ 13 Bildrechte und Datenschutz</b>
+<p>Alle Aufnahmen stehen dem Mieter uneingeschränkt zur Verfügung. Der Mieter stellt sicher, dass die anwesenden Personen über die Fotoaufnahmen informiert sind; der Vermieter stellt dafür einen Aushang bereit. Eine auf Wunsch bereitgestellte Online-Galerie ist über einen nicht öffentlichen Link erreichbar und wird vier Wochen nach der Veranstaltung gelöscht. Einzelne Aufnahmen verwendet der Vermieter nur mit ausdrücklicher Einwilligung der abgebildeten Personen für Referenz- und Werbezwecke.</p>
+<b>§ 14 Schlussbestimmungen</b>
+<p>Änderungen und Ergänzungen bedürfen der Textform. Es gilt deutsches Recht. Sollte eine Bestimmung unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.</p>
+</div>`
+};
+
+  /* Impressum, Datenschutz und AGB muessen immer erreichbar sein - auch wenn
+     keine Bibliothek laedt und die Schubladen gar nicht erst existieren.
+     Dann haengen die Texte als offene Abschnitte vor dem Footer. */
+  function legalFallback() {
+    if (document.getElementById('legalPlain')) return;
+    var sec = document.createElement('section');
+    sec.id = 'legalPlain'; sec.className = 'block';
+    sec.style.borderTop = '1px solid var(--rule)';
+    var w = document.createElement('div'); w.className = 'wrap';
+    var ttl = [['impressum','Impressum'],['datenschutz','Datenschutzerklärung'],['agb','AGB']];
+    for (var i = 0; i < ttl.length; i++) {
+      var d = document.createElement('details');
+      d.style.borderTop = '1px solid var(--rule)'; d.style.padding = '14px 0';
+      var s = document.createElement('summary');
+      s.textContent = ttl[i][1]; s.style.cursor = 'pointer';
+      var c = document.createElement('div');
+      c.innerHTML = LEGAL[ttl[i][0]];
+      d.appendChild(s); d.appendChild(c); w.appendChild(d);
+    }
+    sec.appendChild(w);
+    var f = document.querySelector('footer');
+    if (f && f.parentNode) f.parentNode.insertBefore(sec, f); else document.body.appendChild(sec);
+  }
+
+  if (!window.THREE || !window.gsap || !window.ScrollTrigger) { fallback(new Error('Bibliothek nicht geladen')); return; }
+
+  function boot() {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+
+  var narrow = window.innerWidth < 760;
+  var SPOTS = [
+    {i:1, t:'Pakete & Preise',    s:'Preise',    p:[ 0.00,  0.64,  0.22], flip:false, side:0},
+    {i:2, t:'Immer inklusive',    s:'Inklusive', p:[ 0.00, -1.56,  0.18], flip:false, side:1},
+    {i:3, t:'Anlässe',            s:'Anlässe',   p:[ 0.00,  1.66,  0.22], flip:true,  side:1},
+    {i:4, t:'Ablauf & Lieferung', s:'Ablauf',    p:[ 0.00, -2.06,  0.60], flip:false, side:0},
+    {i:5, t:'Fragen',             s:'Fragen',    p:[ 0.76,  2.05,  0.18], flip:false, side:0}
+  ];
+  var SHEETS = {
+    pakete:      {num:'01', t:'Pakete & Preise',    html:`<p>Drei Pakete. Der Unterschied ist die Anzahl der Bilder, die ihr vor Ort ausgedruckt mitnehmt.</p><div class="pak"><div><b>200 Bilder</b><span>299 &euro;</span></div><div><b>400 Bilder</b><span>379 &euro;</span></div><div><b>800 Bilder</b><span>499 &euro;</span></div></div><h4>In jedem Paket enthalten</h4><p>Lieferung, Aufbau, Einweisung und Abbau, eine Kiste Requisiten und der Sofortausdruck vor Ort. Dazu gibt es auf Wunsch eine Online-Galerie: Nach der Feier bekommt ihr einen Link, über den ihr und eure Gäste alle Bilder vier Wochen lang ansehen und herunterladen könnt. Bei 200 und 400 Bildern kostet sie 39 &euro;, im Paket mit 800 Bildern ist sie enthalten.</p><h4>Reservierung</h4><p>Mit der Buchung werden 100 &euro; fällig. Die Gebühr wird vollständig auf den Mietpreis angerechnet.</p><p class="fine">Alle Preise sind Endpreise. Kleinunternehmer nach § 19 UStG, Umsatzsteuer wird nicht ausgewiesen.</p>`},
+    inklusive:   {num:'02', t:'Immer inklusive',    html:`<h4>Immer dabei</h4><p>Lieferung, Aufbau, Einweisung und Abbau. Eine Kiste Requisiten. Sofortausdruck vor Ort. Personalisierte Fotostreifen. Während eurer Veranstaltung bin ich telefonisch erreichbar.</p><h4>Eure Ausdrucke, euer Layout</h4><p>Klassische Hochkant-Streifen mit eurem Logo, oder Querformat mit Namen, Datum und einem Grußtext – zum Geburtstag, zur Hochzeit, zum Firmenjubiläum. Das Layout gestalte ich vorher für euch, komplett personalisiert. Ihr sagt mir, was draufstehen soll.</p><h4>Online-Galerie</h4><p>Auf Wunsch. Alle Bilder über einen Link, vier Wochen abrufbar und herunterladbar, danach wird sie gelöscht. 39 &euro; – im Paket mit 800 Bildern inklusive.</p>`},
+    anlaesse:    {num:'03', t:'Anlässe',            html:`<p>Die Box passt überall dorthin, wo Leute zusammenkommen.</p><h5>Hochzeit</h5><p>Gästebuch zum Mitnehmen – jeder Streifen geht mit nach Hause.</p><h5>Firmenfeier</h5><p>Euer Logo auf jedem Druck, Layout nach Absprache.</p><h5>Geburtstag</h5><p>Requisitenkiste dabei, Aufbau in zwanzig Minuten.</p><h5>Vereinsfest</h5><p>Robust genug fürs Zelt, läuft den ganzen Abend ohne Betreuung.</p><h4>Auf Anfrage buchbar</h4><p>Hochzeitsfotografie – die Reportage von eurem Tag.<br>Hochzeitsvideo – Film oder Highlight-Reel.<br>Social-Media-Content – Reels und Fotos für Firmen und Vereine.<br>Imagefilm und Produktfotos – für Unternehmen aus der Region.</p><p>Die Box lässt sich mit allem kombinieren. Fragt einfach an, dann mache ich euch ein Angebot.</p>`},
+    ablauf:      {num:'04', t:'Ablauf & Lieferung', html:`<h4>So läuft es</h4><p>Ihr fragt über das Formular oder per Mail an, ich schicke euch ein Angebot und den Mietvertrag. Mit der Buchung werden 100 &euro; Reservierungsgebühr fällig, die auf den Mietpreis angerechnet werden. Den Rest zahlt ihr am Veranstaltungstag oder nach Rechnung.</p><h4>Anfahrt</h4><p>Bis 15 km ab Wangen im Allgäu kostenlos. Liegt euer Ort weiter weg, nenne ich euch die Anfahrtspauschale direkt im Angebot.</p><h4>Mietdauer</h4><p>Tagesmiete – die Box bleibt, so lange die Feier geht. Das Ende sprechen wir vorher ab.</p><h4>Was ihr bereitstellt</h4><p>Eine 230-V-Steckdose in höchstens 10 m Entfernung und eine ebene, trockene Stellfläche von mindestens 2 × 2 m. Mehr braucht es nicht.</p><h4>Stornierung</h4><p>Jederzeit möglich. Die 100 &euro; werden einbehalten, weitere Kosten entstehen nicht. Findet ihr innerhalb eines Jahres einen freien Ersatztermin, rechne ich die Gebühr darauf an.</p>`},
+    fragen:      {num:'05', t:'Häufige Fragen',     html:`<details class="qa"><summary>Wie viel Platz braucht die Fotobox?</summary><p>Eine ebene, trockene Fläche von mindestens 2 × 2 m. Mehr ist schöner, damit sich die Gäste davor bewegen können, nötig ist es nicht.</p></details><details class="qa"><summary>Braucht ihr Strom?</summary><p>Ja, eine normale 230-V-Steckdose in höchstens 10 Metern Entfernung. Verlängerungskabel bringe ich mit.</p></details><details class="qa"><summary>Wie sehen die Ausdrucke aus?</summary><p>Entweder als klassischer Hochkant-Streifen mit mehreren Bildern untereinander und eurem Logo darunter, oder im Querformat mit Namen, Datum und einem Grußtext. Das Layout ist komplett personalisierbar – ich gestalte es vorher nach euren Wünschen.</p></details><details class="qa"><summary>Wer baut die Box auf?</summary><p>Ich. Ich liefere sie, baue sie auf, erkläre sie kurz und baue sie nach der Feier wieder ab. Ihr müsst nichts vorbereiten außer Strom und Stellfläche.</p></details><details class="qa"><summary>Wie lange steht die Box bei uns?</summary><p>Es ist eine Tagesmiete: Die Box bleibt, so lange die Feier geht. Das Ende sprechen wir vorher ab, damit ich den Abbau einplanen kann.</p></details><details class="qa"><summary>Wie früh sollten wir buchen?</summary><p>Je früher desto besser – Samstage zwischen Mai und September sind zuerst weg. Kurzfristige Anfragen lohnen sich trotzdem, oft geht noch etwas.</p></details><details class="qa"><summary>Was kostet die Anfahrt?</summary><p>Bis 15 km ab Wangen im Allgäu ist die Anfahrt kostenlos. Liegt euer Ort weiter weg, nenne ich euch die Pauschale im Angebot. Lieferung, Aufbau, Einweisung und Abbau sind immer im Preis enthalten.</p></details><details class="qa"><summary>Geht die Box auch draußen?</summary><p>Ja. Den Platz wählt ihr. Ich empfehle einen überdachten, wind- und wettergeschützten Standort ohne direkte Sonne – Regen und pralle Sonne mag die Technik beide nicht, und die Bilder werden besser.</p></details><details class="qa"><summary>Muss jemand die Box bedienen?</summary><p>Nein. Die Gäste bedienen sie selbst, ich erkläre sie zu Beginn kurz. Requisiten stehen dabei.</p></details><details class="qa"><summary>Was bekommen wir am Ende?</summary><p>Alle Bilder werden sofort vor Ort gedruckt. Auf Wunsch gibt es zusätzlich eine Online-Galerie, über die ihr und eure Gäste die Bilder vier Wochen lang herunterladen könnt – für 39 €, im Paket mit 800 Bildern inklusive.</p></details><details class="qa"><summary>Wie läuft die Buchung ab?</summary><p>Ihr fragt über das Formular oder per Mail an, ich schicke euch ein Angebot und den Mietvertrag. Mit der Buchung werden 100 € Reservierungsgebühr fällig, die auf den Mietpreis angerechnet werden. Den Rest zahlt ihr am Veranstaltungstag oder nach Rechnung.</p></details><details class="qa"><summary>Was passiert, wenn wir absagen müssen?</summary><p>Ihr könnt jederzeit stornieren. Die 100 € Reservierungsgebühr behalte ich ein, weitere Kosten entstehen nicht. Findet ihr innerhalb eines Jahres einen Ersatztermin und ist der frei, rechne ich die Gebühr darauf an.</p></details>`},
+    ueber:       {num:'06', t:'Über Janis',         html:`<p><img src="img/janis-portrait.webp" alt="Janis Schorer vor der Fotobox" class="pic-janis" width="468" height="468" decoding="async"></p><p>Hi, ich bin Janis.</p><p>Ich bin 20, komme aus Wangen im Allgäu und bin selbständiger Fotograf. Meine erste Hochzeit habe ich mit 16 fotografiert. Heute mache ich Social-Media-Content, arbeite beim Fernsehen – und nebenher vermiete ich die beste Fotobox im Allgäu.</p><p>Ich habe die Fotobox ins Leben gerufen, weil sie jede Feier um ein interaktives Erlebnis ergänzt: Die Gäste werden selbst kreativ, machen gemeinsam Fotos und nehmen den Ausdruck direkt mit nach Hause – eine Erinnerung, die bleibt.</p><p>Ich liefere die Box selbst, baue sie auf, erkläre sie kurz und baue sie am Ende wieder ab. Während eurer Veranstaltung bin ich telefonisch erreichbar.</p><p>Wenn ihr den ganzen Tag festgehalten haben wollt: Hochzeitsfotografie und Video gibt es bei mir aus einer Hand – auf Anfrage, zusammen mit der Box oder einzeln.</p>`},
+    kontakt:     {num:'07', t:'Kontakt',            html:`<p>Janis Schorer<br>Fotobox Wangen<br>Johannes-Jung-Str. 4<br>88239 Wangen im Allgäu</p><p><a href="tel:+4915202126006">0152 02126006</a><br><a href="mailto:anfrage@fotobox-wangen.de">anfrage@fotobox-wangen.de</a></p><p class="fine">Am schnellsten geht es über das Anfrageformular – dann habe ich Datum und Ort gleich dabei.</p>`},
+    anfrage:     {num:'08', t:'Termin anfragen',    html:`<form class="frm" id="anfrageForm" novalidate><label>Anlass<div class="chips" id="anlassChips"><button type="button" aria-pressed="false">Hochzeit</button><button type="button" aria-pressed="false">Firmenfeier</button><button type="button" aria-pressed="false">Geburtstag</button><button type="button" aria-pressed="false">Vereinsfest</button><button type="button" aria-pressed="false">Anderes</button></div></label><label>Datum der Feier<input type="date" name="datum"></label><label>Ort<input type="text" name="ort" placeholder="z. B. Wangen im Allgäu" autocomplete="address-level2"></label><label>Name<input type="text" name="name" autocomplete="name"></label><label>E-Mail oder Telefon<input type="text" name="kontakt" autocomplete="email"></label><label>Nachricht<textarea name="nachricht" placeholder="Wie viele Gäste, drinnen oder draußen, besondere Wünsche?"></textarea></label><label class="agbrow"><input type="checkbox" name="agb"><span>Ich habe die <a href="#" data-sheet="agb">AGB</a> und die <a href="#" data-sheet="datenschutz">Datenschutzerklärung</a> gelesen.</span></label><div class="err" id="frmErr" hidden></div><button type="submit" class="send">Anfrage senden</button><p class="fine">Im nächsten Schritt wählst du, ob die Anfrage per WhatsApp oder per E-Mail rausgeht – alles ist dann schon ausgefüllt. Am zuverlässigsten ist WhatsApp.</p></form>`},
+    menu:        {num:'',   t:'Menü',               html:`<div class="nav-sheet"><button data-go="pakete">Pakete &amp; Preise</button><button data-go="galerie">So sieht das aus</button><button data-go="sheet:anlaesse">Anlässe</button><button data-go="sheet:ablauf">Ablauf &amp; Lieferung</button><button data-go="sheet:fragen">Häufige Fragen</button><button data-go="sheet:ueber">Über Janis</button><button data-go="sheet:anfrage">Termin anfragen</button></div>`},
+    impressum:   {num:'',   t:'Impressum',          html:LEGAL.impressum},
+    datenschutz: {num:'',   t:'Datenschutzerklärung', html:LEGAL.datenschutz},
+    agb:         {num:'',   t:'AGB',                html:LEGAL.agb}
+  };
+  var SPOT_SHEET = {1:'pakete', 2:'inklusive', 3:'anlaesse', 4:'ablauf', 5:'fragen'};
+
+  var track = document.getElementById('track');
+  for (var r = 0; r < 4; r++)
+    ['ab 299 €','Sofortausdruck vor Ort','Lieferung & Aufbau inklusive','Requisiten dabei','Personalisierte Streifen','Anfahrt bis 15 km frei','Wangen im Allgäu']
+      .forEach(function (f) { var s = document.createElement('span'); s.textContent = f + '  ·'; track.appendChild(s); });
+
+  var hotsEl = document.getElementById('hots');
+  var hotNodes = SPOTS.map(function (s) {
+    var b = document.createElement('button');
+    b.className = 'hot' + (s.flip ? ' flip' : '');
+    b.innerHTML = '<span class="dot">0' + s.i + '</span><span class="chip">' + (narrow ? s.s : s.t) + '</span>';
+    b.addEventListener('click', function (e) { e.stopPropagation(); openPanel(s.i); });
+    hotsEl.appendChild(b); return b;
+  });
+  /* GSAP animiert nur diese Zahlen; Position, Groesse und Deckkraft schreibt die Bildschleife in einem Rutsch */
+  var HS = hotNodes.map(function(){ return {o:1, s:1}; });
+
+  /* =============== 3D =============== */
+  var host = document.getElementById('scene');
+  /* Handy: kein Antialias, gedeckelte Aufloesung, keine Schattenkarte. Der Schatten unten
+     ist ein gemaltes Oval - das spart pro Bild einen kompletten zweiten Renderdurchgang. */
+  var small = window.innerWidth < 760;
+  var coarse = !window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  var mobile = small || coarse;
+  var renderer = new THREE.WebGLRenderer({antialias:true, alpha:true, powerPreference:'high-performance'});
+  /* Volle Schaerfe auf Retina-Displays. Falls ein aelteres Handy das nicht fluessig schafft,
+     schaltet die Bildschleife einmalig eine Stufe runter. */
+  var dprMax = Math.min(window.devicePixelRatio || 1, mobile ? 2.5 : 2);
+  renderer.setPixelRatio(dprMax);
+  /* Handy: Box kleiner, damit sie mit Luft im Bild steht */
+  /* Handy: Box so gross, dass sie samt Hinweis sauber zwischen Kopf- und Fussleiste passt,
+     und genau in dieser freien Flaeche zentriert. */
+  var fitK = 0.74, restY = 0;
+  function boothK(){ return small ? fitK : 1; }
+  renderer.shadowMap.enabled = false;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  host.appendChild(renderer.domElement);
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  camera.position.set(0, 0, 11);
+
+  /* Fast flaches Licht: die Flaechen sollen wie in der Grafik ruhig wirken,
+     nur beim Drehen darf man die Tiefe ahnen. */
+  scene.add(new THREE.AmbientLight(0xffffff, 0.86));
+  var key = new THREE.DirectionalLight(0xffffff, 0.26);
+  key.position.set(-3, 5, 7);
+  scene.add(key);
+
+  /* Grauer als die Vorlage: auf weissem Grund braucht der Korpus Kontrast,
+     sonst verschwindet die Box in der Seite. */
+  var shell  = new THREE.MeshLambertMaterial({color:0xc8c8cf});
+  var baseM  = new THREE.MeshLambertMaterial({color:0xd2d2d8});
+  var frameM = new THREE.MeshLambertMaterial({color:0x6c6c70});
+  var lensM  = new THREE.MeshBasicMaterial({color:0x202026});
+  var whiteM = new THREE.MeshBasicMaterial({color:0xffffff});
+  var paperM = new THREE.MeshBasicMaterial({color:0xfafafa});
+  var dark   = new THREE.MeshBasicMaterial({color:0x202026});
+
+  /* Lichtleiste: Verlauf von Blau nach Cyan, wie in der Vorlage. */
+  var barCan = document.createElement('canvas'); barCan.width = 4; barCan.height = 64;
+  var bx = barCan.getContext('2d');
+  var bgr = bx.createLinearGradient(0, 0, 0, 64);
+  bgr.addColorStop(0, '#4778de'); bgr.addColorStop(1, '#73e2e0');
+  bx.fillStyle = bgr; bx.fillRect(0, 0, 4, 64);
+  var barM = new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(barCan)});
+
+  /* Display als Leinwand-Textur */
+  var sc = document.createElement('canvas'); sc.width = 960; sc.height = 528;
+  var sx = sc.getContext('2d'); sx.scale(3, 3);   /* dreifache Aufloesung, gezeichnet wird wie bisher in 320x176 */
+  var scTex = new THREE.CanvasTexture(sc);
+  scTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  function drawScreen(txt, sub){
+    sx.fillStyle = '#747474'; sx.fillRect(0,0,320,176);
+    sx.fillStyle = '#ffffff'; sx.textAlign = 'center'; sx.textBaseline = 'middle';
+    sx.font = (txt.length > 2 ? '600 40px' : '600 96px') + ' "IBM Plex Mono", monospace';
+    sx.fillText(txt, 160, 84);
+    if (sub){ sx.font = '500 18px "IBM Plex Mono", monospace'; sx.fillStyle = '#d8d8da';
+      sx.fillText(sub, 160, 142); }
+    scTex.needsUpdate = true;
+  }
+  drawScreen('BEREIT', 'tippe auf die nummern');
+  var screenMat = new THREE.MeshBasicMaterial({map:scTex});
+
+  var booth = new THREE.Group(); var P = {};
+  function box(w,h,d,mat,x,y,z){
+    var m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat);
+    m.position.set(x,y,z); return m;
+  }
+  function roundRect(w,h,r){
+    var sh = new THREE.Shape(), x = w/2, y = h/2;
+    sh.moveTo(-x+r,-y);
+    sh.lineTo(x-r,-y);  sh.quadraticCurveTo(x,-y, x,-y+r);
+    sh.lineTo(x,y-r);   sh.quadraticCurveTo(x,y, x-r,y);
+    sh.lineTo(-x+r,y);  sh.quadraticCurveTo(-x,y, -x,y-r);
+    sh.lineTo(-x,-y+r); sh.quadraticCurveTo(-x,-y, -x+r,-y);
+    return sh;
+  }
+  function slab(w,h,d,r,mat){
+    var g = new THREE.ExtrudeGeometry(roundRect(w,h,r), {depth:d, bevelEnabled:true,
+      bevelThickness:0.02, bevelSize:0.02, bevelSegments:1, curveSegments:14});
+    g.center();
+    return new THREE.Mesh(g, mat);
+  }
+  function disc(r, mat, seg){
+    return new THREE.Mesh(new THREE.CircleGeometry(r, seg || 72), mat);
+  }
+
+  /* Masse pixelgenau aus der Vorlage: Korpus 274x317, Objektiv auf 21 % der
+     Hoehe, Blende 78,5 % breit, Saeule 30 %, Lichtleiste schmal bis unten. */
+  var HW = 2.00, HH = 2.31, HD = 0.30, HY = 1.000, FZ = HD/2;
+
+  P.head   = slab(HW, HH, HD, 0.135, shell);  P.head.position.set(0, HY, 0);
+
+  /* Wichtig: das Gehaeuse ist 0,30 tief plus 0,02 Fase je Seite, seine
+     Vorderflaeche liegt also bei 0,17. Alles Flache muss davor sitzen,
+     sonst steckt es im Korpus und taucht erst beim Zerlegen auf. */
+  P.ring   = disc(0.222, whiteM);            P.ring.position.set(0, 1.652, FZ + 0.028);
+  P.lens   = disc(0.198, lensM);             P.lens.position.set(0, 1.652, FZ + 0.034);
+  P.glint  = disc(0.030, whiteM, 16);        P.glint.position.set(0.072, 1.726, FZ + 0.044);
+
+  /* Das Objektiv ist von der ersten Sekunde an als Objektiv zu erkennen:
+     dunkler Rand, Tubus, Glas, Blende. Die Teile haengen an Ring und Linse,
+     damit sie beim Zerlegen mitfliegen statt stehen zu bleiben. */
+  var mat = function (c) { return new THREE.MeshBasicMaterial({color:c}); };
+  /* So wenig wie moeglich: ein dunkler Aussenrand, das weisse Ringlicht,
+     eine dunkle Scheibe, ein Lichtpunkt. Mehr braucht es nicht. */
+  var lensRim = disc(0.238, mat(0x202026)); lensRim.position.z = -0.004; P.ring.add(lensRim);
+  /* Der runde Lichtpunkt war das staerkste Gesichtsmerkmal - als flacher
+     Streifen am oberen Rand liest er sich als Reflex auf Glas, nicht als
+     Pupillenglanz. */
+  P.glint.scale.set(1, 0.34, 1);
+  P.glint.rotation.z = -0.42;
+  P.glint.visible = false;   /* Objektiv ohne Lichtpunkt */
+
+  /* Display: in echt ein schmaler Rand, nicht der dicke Rahmen von vorher. */
+  P.scrF   = slab(1.76, 0.96, 0.05, 0.045, frameM); P.scrF.position.set(0, 0.640, FZ + 0.006);
+  P.screen = box(1.68, 0.88, 0.02, screenMat, 0, 0.640, FZ + 0.035);
+
+  P.column = slab(0.40, 1.85, 0.20, 0.05, shell); P.column.position.set(0, -1.085, 0);
+  P.bar    = slab(0.046, 0.78, 0.03, 0.023, barM); P.bar.position.set(0, -1.560, 0.135);
+
+  /* Standfuss: runde Platte wie beim Original, keine eckige. */
+  P.base = new THREE.Mesh(new THREE.CylinderGeometry(0.76, 0.76, 0.15, 64), baseM);
+  P.base.position.set(0, -2.085, 0.05);
+
+  Object.keys(P).forEach(function (k) {
+    booth.add(P[k]);
+    P[k].userData.home = P[k].position.clone();
+    P[k].userData.rot0 = P[k].rotation.clone();
+  });
+
+  /* Der Streifen kommt unten aus dem Korpus. */
+  P.head.add(box(0.80, 0.04, 0.02, dark, 0, -1.03, 0.172));
+
+  var sheet = new THREE.Group();
+  sheet.add(box(0.21, 0.74, 0.012, paperM, 0, -0.37, 0));
+  for (var f = 0; f < 4; f++) sheet.add(box(0.155, 0.14, 0.004, dark, 0, -0.12 - f*0.162, 0.009));
+  sheet.position.set(0, -0.05, 0.195); sheet.scale.y = 0.001;
+  booth.add(sheet);
+  scene.add(booth);
+
+  var shCan = document.createElement('canvas'); shCan.width = shCan.height = 128;
+  var sg = shCan.getContext('2d');
+  var grd = sg.createRadialGradient(64,64,3,64,64,62);
+  grd.addColorStop(0,'rgba(11,11,12,.40)'); grd.addColorStop(.5,'rgba(11,11,12,.15)');
+  grd.addColorStop(1,'rgba(11,11,12,0)');
+  sg.fillStyle = grd; sg.fillRect(0,0,128,128);
+  var ground = new THREE.Mesh(new THREE.PlaneGeometry(3.6,2.2),
+    new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shCan), transparent:true, depthWrite:false}));
+  ground.rotation.x = -Math.PI/2; ground.position.y = -2.15;
+  scene.add(ground);
+
+  /* Explosionsrichtungen + Etiketten */
+  /* d = wohin das Teil fliegt, r = wie es sich dabei dreht, ph = wann es losfliegt */
+  /* Handy (hochkant): eigene Explosionszeichnung. Alles wird senkrecht gestapelt und seitlich
+     versetzt, damit sich weder Teile noch Beschriftungen ueberdecken. Werte = Versatz in Box-Einheiten. */
+  var EXM = {
+    ring:   [-0.18,  1.00, 0.45],
+    lens:   [ 0.18,  1.00, 1.05],
+    head:   [ 0.00,  0.18,-0.45],
+    scrF:   [ 0.00, -0.30, 0.80],
+    screen: [ 0.00, -0.30, 0.95],
+    column: [ 0.00, -0.62, 0.00],
+    bar:    [ 1.40, -0.50, 0.40],
+    base:   [ 0.00, -1.25, 0.20],
+    glint:  [ 0.18,  1.00, 1.10]
+  };
+  var EX = [
+    {k:'glint',  d:[ 0.30, 0.55, 0.65], r:[ 0.00, 0.00, 0.00], ph:0.00, t:null},
+    {k:'ring',   d:[-0.95, 0.75, 0.70], r:[ 0.25, 0.00, 0.35], ph:0.04, t:'Ringlicht'},
+    {k:'lens',   d:[-0.95, 0.75, 0.98], r:[ 0.00, 0.00, 1.10], ph:0.08, t:'Objektiv'},
+    {k:'scrF',   d:[ 1.00, 0.05, 0.62], r:[ 0.00, 0.32, 0.00], ph:0.14, t:null},
+    {k:'screen', d:[ 1.00, 0.05, 0.92], r:[-0.10, 0.38, 0.06], ph:0.18, t:'Display'},
+    {k:'head',   d:[-0.40, 1.05, 0.15], r:[ 0.06,-0.26, 0.09], ph:0.24, t:'Gehäuse'},
+    {k:'bar',    d:[-1.05,-0.58, 0.55], r:[ 0.00,-0.30, 0.22], ph:0.33, t:'Lichtleiste'},
+    {k:'column', d:[-1.05,-0.45, 0.22], r:[ 0.12, 0.20,-0.08], ph:0.38, t:'Säule'},
+    {k:'base',   d:[-0.15,-0.95, 0.28], r:[-0.16, 0.10, 0.00], ph:0.44, t:'Standfuß'}
+  ];
+  var tagsEl = document.getElementById('tags');
+  EX.forEach(function (e) {
+    if (!e.t) return;
+    var n = document.createElement('div'); n.className = 'tag'; n.textContent = e.t;
+    tagsEl.appendChild(n); e.el = n;
+  });
+
+  var hintEl = document.getElementById('hint');
+  var S = {dock:0, boom:0, rotY:0, rotX:0, tgtY:0, tgtX:0, px:0, py:0, scale:1, spin:0};
+
+  function visible(dist){
+    var h = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov)/2) * dist;
+    return {h:h, w:h * camera.aspect};
+  }
+  function layoutPhone(){
+    if (!small) { fitK = 1; restY = 0; return; }
+    var vi = visible(camera.position.z), ph = host.clientHeight || window.innerHeight, ppu = ph / vi.h;
+    var tb = document.querySelector('.topbar'), bb = document.querySelector('.bottombar');
+    var top = (tb ? tb.offsetHeight : 70) + 18;
+    var bottom = window.innerHeight - (bb ? bb.offsetHeight : 50) - 58;   /* 58px: Platz fuer den Hinweis */
+    var avail = Math.max(160, bottom - top);
+    fitK = Math.min(0.74, (avail * 0.9) / (4.4 * ppu));
+    restY = (ph / 2 - (top + bottom) / 2) / ppu;
+  }
+  function resize(){
+    var w = host.clientWidth, h = host.clientHeight;
+    vw = w; vh = h;
+    small = w < 760;
+    camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w,h,false);
+    camera.position.z = small ? 10.5 : 11;
+    layoutPhone();
+  }
+  ScrollTrigger.config({ignoreMobileResize:true});
+  var lastW = window.innerWidth;
+  window.addEventListener('resize', function(){
+    var w = window.innerWidth;
+    resize();
+    if (w !== lastW) { lastW = w; ScrollTrigger.refresh(); }
+  });
+  window.addEventListener('orientationchange', function(){
+    setTimeout(function(){ resize(); ScrollTrigger.refresh(); }, 250);
+  });
+  /* Kamera-Seitenverhaeltnis muss immer zur echten Canvas-Groesse passen, sonst wird
+     alles verzerrt (Objektiv oval). Darum auf jede Groessenaenderung der Flaeche reagieren. */
+  if (window.ResizeObserver) {
+    var lastHW = '';
+    new ResizeObserver(function(){
+      var k = host.clientWidth + 'x' + host.clientHeight;
+      if (k !== lastHW) { lastHW = k; resize(); }
+    }).observe(host);
+  }
+  resize();
+
+  if (!reduce && window.matchMedia('(hover:hover)').matches) {
+    window.addEventListener('mousemove', function (e) {
+      var nx = (e.clientX / window.innerWidth) - 0.5, ny = (e.clientY / window.innerHeight) - 0.5;
+      if (S.dock > 0.3) { S.tgtY = 0; S.tgtX = 0; return; }
+      S.tgtY = nx * 0.16; S.tgtX = ny * -0.07;
+    });
+  }
+  var drag = null;
+  window.addEventListener('pointerdown', function (e) {
+    if (e.pointerType !== 'mouse' || S.dock > 0.3) return;
+    if (e.target.closest('.hot,.topbar,.bottombar,.panel,button,a')) return;
+    drag = {x:e.clientX, y:S.tgtY};
+  });
+  window.addEventListener('pointermove', function (e) { if (drag) S.tgtY = drag.y + (e.clientX - drag.x) * 0.007; });
+  window.addEventListener('pointerup', function(){ drag = null; });
+
+  var v = new THREE.Vector3(), wp = new THREE.Vector3(), nrm = new THREE.Vector3(), toCam = new THREE.Vector3();
+  var vw = host.clientWidth, vh = host.clientHeight;   /* Canvasgroesse: nur bei resize gelesen, nie in der Bildschleife */
+  function project(vec){
+    vec.project(camera);
+    return {x: (vec.x*0.5+0.5)*vw, y: (-vec.y*0.5+0.5)*vh};
+  }
+  var tagsShown = false, shooting = false, screenMode = '';
+  /* Das Display darf nicht zum Antippen der Nummern auffordern, wenn gerade
+     gar keine Nummern zu sehen sind - also waehrend des Zerlegens und wenn
+     die Box in der Ecke angedockt ist. */
+  /* Nicht ueber die Variable scrim gehen: die wird erst weiter unten
+     gesetzt, die Bildschleife laeuft aber schon vorher. */
+  var scrimEl = null;
+  function panelIsOpen(){
+    if (!scrimEl) scrimEl = document.getElementById('scrim');
+    return !!scrimEl && scrimEl.classList.contains('open');
+  }
+  function autoScreen(hidden){
+    if (shooting && (S.boom > 0.1 || S.dock > 0.35)) shooting = false;
+    if (shooting || panelIsOpen()) return;
+    var m = hidden ? 'teile' : 'bereit';
+    if (m === screenMode) return;
+    screenMode = m;
+    if (m === 'teile') drawScreen('FOTOBOX', 'wangen im allgäu');
+    else drawScreen('BEREIT', 'tippe auf die nummern');
+  }
+  /* Beschriftungen duerfen sich nie ueberlagern: Rechtecke nach Hoehe sortieren und
+     ueberlappende nach unten schieben. Der Versatz wird weich nachgezogen, damit nichts springt. */
+  var GAP = 6;
+  function sizeOf(el){
+    if (!el._w || !el._h) { el._w = el.offsetWidth; el._h = el.offsetHeight; }
+    return el._w ? {w:el._w, h:el._h} : null;
+  }
+  var topbarH = 70;
+  function measureBars(){ var tb = document.querySelector('.topbar'); topbarH = tb ? tb.offsetHeight : 70; }
+  measureBars();
+  window.addEventListener('resize', function(){
+    measureBars();
+    hotNodes.forEach(function(n){ n._w = 0; });
+    EX.forEach(function(e){ if (e.el) e.el._w = 0; });
+  });
+  function declutter(items){
+    items.sort(function(a,b){ return a.y - b.y; });
+    for (var pass = 0; pass < 3; pass++) {
+      for (var i = 0; i < items.length; i++) for (var j = 0; j < i; j++) {
+        var a = items[j], b = items[i];
+        var ox = Math.min(a.x + a.w/2, b.x + b.w/2) - Math.max(a.x - a.w/2, b.x - b.w/2);
+        var need = (a.h + b.h)/2 + GAP - (b.y - a.y);
+        if (ox > -GAP && need > 0) b.y += need;
+      }
+    }
+  }
+  /* Nur der Ausweich-Versatz wird weich nachgezogen. Die Grundposition klebt exakt am Teil,
+     sonst schwimmen die Schilder beim Scrollen hinterher. */
+  function ease(el, key, base, target){
+    var off = target - base, cur = el[key];
+    if (cur === undefined) cur = off;
+    cur += (off - cur) * 0.2;
+    if (Math.abs(off - cur) < 0.05) cur = off;
+    el[key] = cur; return base + cur;
+  }
+  function placeOverlays(){
+    var hotsHidden = S.dock > 0.5 || S.boom > 0.02;
+    autoScreen(hotsHidden);
+    var items = [];
+    for (var i = 0; i < SPOTS.length; i++) {
+      var el = hotNodes[i];
+      if (hotsHidden || HS[i].o < 0.01) { if (el._vis !== 0) { el.style.visibility = 'hidden'; el._vis = 0; } continue; }
+      v.set(SPOTS[i].p[0], SPOTS[i].p[1], SPOTS[i].p[2]); booth.localToWorld(v); wp.copy(v);
+      var s = project(v);
+      nrm.set(SPOTS[i].p[0], 0, SPOTS[i].p[2]).normalize().applyQuaternion(booth.quaternion);
+      toCam.copy(camera.position).sub(wp).normalize();
+      var back = nrm.dot(toCam) < -0.15;
+      if (el._vis !== (back ? 0 : 1)) { el.style.visibility = back ? 'hidden' : 'visible'; el._vis = back ? 0 : 1; }
+      if (back) continue;
+      /* Feste Seite pro Nummer: abwechselnd links/rechts, damit die Schilder auseinanderlaufen */
+      var flip = narrow ? !!SPOTS[i].side : s.x > vw * 0.52;
+      if (el._flip !== flip) { el.classList.toggle('flip', flip); el._flip = flip; el._w = 0; }
+      var sz = sizeOf(el); if (!sz) continue;
+      /* Der Punkt sitzt genau auf der Stelle an der Box, das Schild haengt daneben */
+      var dotHalf = narrow ? 22 : 12.5, cx = flip ? s.x - (sz.w/2 - dotHalf) : s.x + (sz.w/2 - dotHalf);
+      cx = Math.max(sz.w/2 + 8, Math.min(vw - sz.w/2 - 8, cx));
+      items.push({el:el, x:cx, y:s.y, y0:s.y, w:sz.w, h:sz.h, i:i});
+    }
+    declutter(items);
+    items.forEach(function(it){
+      var h = HS[it.i];
+      it.el.style.transform = 'translate3d(' + it.x.toFixed(1) + 'px,' + ease(it.el, '_y', it.y0, it.y).toFixed(1) +
+        'px,0) translate(-50%,-50%) scale(' + h.s.toFixed(3) + ')';
+      it.el.style.opacity = h.o.toFixed(3);
+    });
+
+    var tagOp = Math.max(0, Math.min(1, (S.boom - 0.015) * 9));
+    if (tagOp <= 0) {
+      if (tagsShown) { EX.forEach(function (e) { if (e.el) { e.el.style.opacity = 0; e.el._ty = undefined; } }); tagsShown = false; }
+      return;
+    }
+    tagsShown = true;
+    var tags = [];
+    EX.forEach(function (e) {
+      if (!e.el) return;
+      var m = P[e.k]; v.copy(m.position); booth.localToWorld(v);
+      var s = project(v), sz = sizeOf(e.el) || {w:80, h:20};
+      /* Ringlicht und Objektiv liegen dicht beieinander: Namen links bzw. rechts daneben statt darueber */
+      var side = small ? (e.k === 'ring' ? -1 : e.k === 'lens' ? 1 : 0) : 0;
+      var px = side ? s.x + side * (sz.w/2 + 30) : s.x, py = side ? s.y : s.y - 24;
+      var x = Math.max(sz.w/2 + 8, Math.min(vw - sz.w/2 - 8, px));
+      var minY = topbarH + sz.h/2 + 8, y0 = Math.max(minY, py);
+      tags.push({el:e.el, x:x, y:y0, y0:y0, w:sz.w, h:sz.h});
+    });
+    declutter(tags);
+    tags.forEach(function(t){
+      t.el.style.transform = 'translate3d(' + t.x.toFixed(1) + 'px,' + ease(t.el, '_ty', t.y0, t.y).toFixed(1) + 'px,0) translate(-50%,-50%)';
+      t.el.style.opacity = tagOp;
+    });
+  }
+
+  var paused = false, clock = new THREE.Clock(), tick = 0;
+  document.addEventListener('visibilitychange', function(){ paused = document.hidden; });
+  var lastNow = 0, slowAvg = 16, dprDropped = false;
+  function frame(){
+    requestAnimationFrame(frame);
+    if (paused) return;
+    tick++;
+    var now = performance.now();
+    if (lastNow && S.dock < 0.95) { var dt = now - lastNow; slowAvg = slowAvg * 0.95 + dt * 0.05;
+      if (!dprDropped && tick > 120 && slowAvg > 26 && dprMax > 1.75) { dprDropped = true; renderer.setPixelRatio(1.75); resize(); } }
+    lastNow = now;
+    /* Angedockt in der Ecke passiert fast nichts mehr - dann reicht jedes dritte Bild. */
+    if (S.dock > 0.95 && S.boom < 0.01 && (tick % 3)) return;
+
+    var t = clock.getElapsedTime();
+    S.rotY += (S.tgtY - S.rotY) * 0.07; S.rotX += (S.tgtX - S.rotX) * 0.07;
+    /* Ruhig stehen bleiben: nur ein Hauch Bewegung, damit es nicht tot wirkt. */
+    var idle = reduce ? 0 : Math.sin(t*0.45)*0.014, bob = reduce ? 0 : Math.sin(t*0.8)*0.016;
+
+    /* Jedes Teil fliegt zu seiner eigenen Zeit los, dreht sich dabei und taumelt leicht weiter. */
+    var spread = small ? 0.6 : 0.72, ROT = small ? 0.12 : 0.3;
+    for (var i = 0; i < EX.length; i++) {
+      var e = EX[i], m = P[e.k], h = m.userData.home, r0 = m.userData.rot0;
+      var b = (S.boom - e.ph) / (1 - e.ph);
+      b = b < 0 ? 0 : (b > 1 ? 1 : b);
+      b = b * b * (3 - 2 * b);                       /* weich anfahren und abbremsen */
+      var d = small ? EXM[e.k] : e.d;
+      m.position.set(h.x + d[0]*b*spread, h.y + d[1]*b*spread, h.z + d[2]*b*spread);
+      var sway = reduce ? 0 : (small ? 0 : Math.sin(t * 0.6 + i) * 0.022 * b);
+      m.rotation.set(r0.x + e.r[0]*b*ROT + sway, r0.y + e.r[1]*b*ROT, r0.z + e.r[2]*b*ROT - sway*0.6);
+    }
+    sheet.visible = S.boom < 0.05;
+
+    /* Etwas kleiner als vorher, damit Objektiv und Standfuss im ersten Bild
+       sicher komplett drin sind und nichts oben abgeschnitten wird. */
+    var bs = boothK() * S.scale * (1 - S.boom * 0.26);
+    booth.rotation.y = S.rotY + idle + S.spin;
+    booth.rotation.x = S.rotX + S.boom * 0.02;
+    booth.position.set(S.px, S.py + (restY + bob) * (1 - S.dock), 0);
+    booth.scale.setScalar(bs);
+
+    ground.visible = S.boom < 0.92 && S.dock < 0.9;
+    if (ground.visible) {
+      ground.material.opacity = 0.95 * (1 - S.boom);
+      ground.position.set(booth.position.x, booth.position.y - 2.15 * bs, booth.position.z);
+      ground.scale.setScalar(bs);
+    }
+
+    /* Kamera bleibt praktisch stehen, damit die Box frontal zum Betrachter bleibt. */
+    camera.position.y = S.boom * (small ? 0.10 : 0.22);
+    camera.lookAt(0, S.boom * 0.06, 0);
+
+    placeOverlays();
+    /* Hinweis klebt mittig direkt unter dem Standfuss statt irgendwo im Bild */
+    if (small && hintEl && S.dock < 0.2) {
+      v.set(0, -2.18, 0); booth.localToWorld(v);
+      hintEl.style.transform = 'translate3d(0,' + (project(v).y + 22).toFixed(1) + 'px,0)';
+    }
+    renderer.render(scene, camera);
+  }
+  frame();
+
+  /* =============== Eingang =============== */
+  function split(el){
+    var txt = el.textContent; el.textContent = '';
+    return txt.split('').map(function (ch) {
+      var s = document.createElement('span'); s.className='k';
+      s.textContent = (ch === ' ') ? '\u00a0' : ch; el.appendChild(s); return s;
+    });
+  }
+  var hintKeys = split(document.getElementById('hint')), h2Keys = split(document.getElementById('h2'));
+
+  if (reduce) {
+    gsap.set(HS, {o:1, s:1}); gsap.set(hintKeys.concat(h2Keys), {opacity:1});
+  } else {
+    gsap.set(HS, {o:0, s:0.75}); gsap.set(hintKeys, {opacity:0, y:8});
+    /* Die Box steht von der ersten Sekunde an frontal da und wird nur kurz
+       von unten nach oben aufgebaut - kein Wegdrehen, keine Kamerafahrt. */
+    var intro = gsap.timeline({delay:0.05});
+    intro.from(P.base.position,   {y:P.base.position.y-1.1, duration:.5, ease:'power3.out'}, 0)
+         .from(P.column.position, {y:P.column.position.y-1.4, duration:.5, ease:'power3.out'}, .05)
+         .from(P.bar.scale,       {y:0.001, duration:.45, ease:'power2.out'}, .2)
+         .from(P.head.position,   {y:P.head.position.y+1.6, duration:.55, ease:'power3.out'}, .1)
+         .from([P.scrF.position, P.screen.position], {z:'+=0.9', duration:.45, ease:'power3.out', stagger:.03}, .28)
+         .from([P.ring.position, P.lens.position, P.glint.position],
+               {z:'+=0.8', duration:.45, ease:'back.out(2)', stagger:.03}, .32)
+         .to(HS, {o:1, s:1, duration:.3, ease:'back.out(2)', stagger:.04}, .2)
+         .to(hintKeys, {opacity:1, y:0, duration:.28, stagger:.015, ease:'power2.out'}, .45)
+         .add(function(){ Object.keys(P).forEach(function(k){ P[k].userData.home = P[k].position.clone(); }); });
+    gsap.to('#track', {xPercent:-50, duration:26, ease:'none', repeat:-1});
+  }
+
+  /* =============== Auslöser: Countdown, Blitz, Druck =============== */
+  var flash = document.getElementById('flash');
+  function shoot(){
+    if (reduce || S.dock > 0.35 || S.boom > 0.1) return;
+    shooting = true;
+    var tl = gsap.timeline();
+    [['3',.0],['2',.75],['1',1.5]].forEach(function (s) {
+      tl.add(function(){ drawScreen(s[0], 'gleich gehts los'); }, s[1]);
+    });
+    tl.add(function(){ drawScreen('·', 'bitte lächeln'); }, 2.25)
+      .to(flash, {opacity:.9, duration:.07}, 2.3)
+      .to(flash, {opacity:0, duration:.55, ease:'power2.out'}, 2.37)
+      .to('#mark img', {scale:1.12, duration:.12, transformOrigin:'50% 50%'}, 2.3)
+      .to('#mark img', {scale:1, duration:.6, ease:'elastic.out(1,.45)', transformOrigin:'50% 50%'}, 2.42)
+      .add(function(){ drawScreen('DRUCKT', 'einen moment'); }, 2.55)
+      /* Der Streifen schiesst aus dem Schlitz und federt kurz nach. */
+      .to(sheet.scale, {y:1, duration:.42, ease:'back.out(1.6)'}, 2.62)
+      .to(sheet.rotation, {z:0.035, duration:.22, ease:'power2.out'}, 2.72)
+      .to(sheet.rotation, {z:0, duration:.9, ease:'elastic.out(1,.4)'}, 2.94)
+      .add(function(){ shooting = false; screenMode = ''; }, 4.6)
+      .to(sheet.scale, {y:.001, duration:.4, ease:'power2.in'}, 4.6);
+  }
+  if (!reduce) { setTimeout(shoot, 1100); setInterval(shoot, 7000); }
+
+  /* =============== Scrollen =============== */
+  if (!reduce) {
+    gsap.timeline({scrollTrigger:{trigger:'#stage', start:'top top', end:'bottom bottom',
+      scrub: coarse ? 1 : .3, invalidateOnRefresh:true}})
+      /* Phase 1 – die Navigationspunkte treten ab, die Box bleibt frontal */
+      .to(HS, {o:0, s:.5, duration:.05, stagger:.008}, 0)
+      .to(hintKeys, {opacity:0, y:-6, duration:.04, stagger:.002}, 0)
+      /* Phase 2 – auseinandernehmen, ohne Drehung */
+      .to(S, {boom:1, duration:.34, ease:'power2.out'}, .06)
+      .to(S, {boom:1, duration:.12}, .40)
+      /* Phase 3 – zusammensetzen */
+      .to(S, {boom:0, duration:.24, ease:'power2.inOut'}, .52)
+      /* Phase 4 – andocken */
+      .to(S, {
+        dock:1, scale:.28,
+        /* In Pixeln gerechnet statt in Prozent: sonst rutscht die angedockte
+           Box auf kleinen Handys hinter die untere Leiste. 2.18 ist die halbe
+           Bauhoehe, 0.28 der Massstab beim Andocken. */
+        px:function(){
+          var vi = visible(camera.position.z), pw = host.clientWidth || 1;
+          var halfW = (HW/2 + 0.02) * boothK() * 0.28;
+          return vi.w/2 - (18 / pw) * vi.w - halfW;
+        },
+        py:function(){
+          var vi = visible(camera.position.z), ph = host.clientHeight || 1;
+          var halfH = 2.18 * boothK() * 0.28;
+          var bar = ((small ? 104 : 34) + Math.max(0, ph - window.innerHeight)) / ph * vi.h;  /* Canvas ist so hoch wie der grosse Viewport - sichtbare Unterkante liegt ggf. hoeher */
+          return -vi.h/2 + bar + halfH;
+        },
+        duration:.22, ease:'power2.inOut'
+      }, .76);
+
+    window.addEventListener('click', function (e) {
+      if (S.dock < 0.7) return;
+      if (e.target.closest('.topbar,.bottombar,.panel,.hot,a,button')) return;
+      v.set(0,0,0); booth.localToWorld(v); var s = project(v);
+      if (Math.hypot(e.clientX - s.x, e.clientY - s.y) < 130) window.scrollTo({top:0, behavior:'smooth'});
+    });
+
+    gsap.from('#cta', {opacity:0, y:26, duration:.7, ease:'power2.out', scrollTrigger:{trigger:'#cta', start:'top 88%'}});
+    var cta = document.getElementById('cta');
+    cta.addEventListener('mouseenter', function(){ gsap.to('#cta .sweep', {xPercent:0, duration:.45, ease:'power3.out'}); });
+    cta.addEventListener('mouseleave', function(){ gsap.to('#cta .sweep', {xPercent:101, duration:.45, ease:'power3.in'}); });
+    gsap.from(h2Keys, {opacity:0, y:26, rotateX:-75, duration:.6, stagger:.016, ease:'back.out(1.6)',
+      scrollTrigger:{trigger:'#h2', start:'top 85%'}});
+    gsap.from('.lede', {opacity:0, y:18, duration:.7, ease:'power2.out', scrollTrigger:{trigger:'.lede', start:'top 88%'}});
+    gsap.utils.toArray('.cell').forEach(function (c, i) {
+      gsap.from(c, {opacity:0, y:28, duration:.6, ease:'power2.out', delay:i*.06,
+        scrollTrigger:{trigger:'.grid', start:'top 86%'}});
+      gsap.to(c.querySelector('.bar'), {scaleX:1, duration:.7, ease:'power2.out', delay:i*.06,
+        scrollTrigger:{trigger:'.grid', start:'top 80%'}});
+    });
+    gsap.from('.price', {opacity:0, y:24, duration:.6, stagger:.09, ease:'power2.out',
+      scrollTrigger:{trigger:'.prices', start:'top 86%'}});
+    gsap.from('.rail figure', {opacity:0, y:22, duration:.55, stagger:.07, ease:'power2.out',
+      scrollTrigger:{trigger:'.rail', start:'top 88%'}});
+    gsap.from('.ueber > *', {opacity:0, y:20, duration:.6, stagger:.1, ease:'power2.out',
+      scrollTrigger:{trigger:'.ueber', start:'top 86%'}});
+    gsap.utils.toArray('.sec').forEach(function (el) {
+      gsap.from(el, {opacity:0, y:12, duration:.5, ease:'power2.out',
+        scrollTrigger:{trigger:el, start:'top 92%'}});
+    });
+    gsap.from('footer > *', {opacity:0, y:16, duration:.55, stagger:.08, ease:'power2.out',
+      scrollTrigger:{trigger:'footer', start:'top 92%'}});
+  }
+
+  /* =============== Panel =============== */
+  var panel = document.getElementById('panel'), scrim = document.getElementById('scrim'),
+      panelBody = document.getElementById('panelBody'), openTl = null;
+
+  /* ============ Feder statt fester Kurve ============
+     Gedacht wird in Daempfung und Reaktionszeit statt in Masse und
+     Steifigkeit. Laeuft auf requestAnimationFrame, startet immer beim
+     aktuellen Bildschirmwert und laesst sich jederzeit unterbrechen und
+     umlenken - genau das, was eine Geste braucht. */
+  function Spring(apply, damping, response){
+    var x = 0, v = 0, tgt = 0, raf = 0, last = 0;
+    function step(now){
+      var dt = (now - last) / 1000; last = now;
+      if (dt > 1/30) dt = 1/30;
+      var w = 2 * Math.PI / response;
+      v += (-w*w*(x - tgt) - 2*damping*w*v) * dt;
+      x += v * dt;
+      apply(x);
+      if (Math.abs(x - tgt) < 0.3 && Math.abs(v) < 6) { x = tgt; v = 0; apply(x); raf = 0; return; }
+      raf = requestAnimationFrame(step);
+    }
+    this.set  = function(val){ if (raf) cancelAnimationFrame(raf); raf = 0; x = val; v = 0; apply(x); };
+    this.value= function(){ return x; };
+    this.stop = function(){ if (raf) cancelAnimationFrame(raf); raf = 0; };
+    this.tune = function(d, r){ damping = d; response = r; };
+    this.to   = function(t, vel){
+      tgt = t; if (typeof vel === 'number') v = vel;
+      if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); }
+    };
+  }
+  /* Wohin traegt die Geste? Apples Projektion, nicht die Schulformel. */
+  function flickTo(vel){ var d = 0.998; return (vel / 1000) * d / (1 - d); }
+  /* Gummiband: je weiter ueber die Kante, desto weniger folgt die Flaeche. */
+  function rubber(over, dim){ var c = 0.55; return (over * dim * c) / (dim + c * Math.abs(over)); }
+
+  var wideMQ = window.matchMedia('(min-width:760px)');
+  function shutY(){
+    return wideMQ.matches ? (panel.offsetWidth || 400) + 60 : (panel.offsetHeight || 620) + 60;
+  }
+  var drawer = new Spring(function (v) {
+    panel.style.transform = wideMQ.matches ? 'translate(' + v + 'px,-50%)'
+                                           : 'translateY(' + v + 'px)';
+  }, 1, 0.38);
+  drawer.set(1400);
+  if (wideMQ.addEventListener) wideMQ.addEventListener('change', function(){
+    drawer.set(drawer.value() > 4 ? shutY() : 0);
+  });
+
+  function openSheet(key, spot){
+    var sh = SHEETS[key]; if (!sh) return;
+    document.getElementById('panelNum').textContent = sh.num || '';
+    document.getElementById('panelTitle').textContent = sh.t;
+    panelBody.innerHTML = sh.html;
+    panelBody.scrollTop = 0; panel.scrollTop = 0;
+    wireSheet(key);
+    hotNodes.forEach(function (n,k) { n.classList.toggle('on', !!spot && k === spot - 1); });
+    scrim.classList.add('open');
+    if (openTl) openTl.kill();
+    if (reduce) { drawer.set(0); gsap.set(scrim,{opacity:1}); }
+    else {
+      if (spot) {
+        var sp = SPOTS.filter(function(x){ return x.i === spot; })[0];
+        drawScreen('0' + spot, sh.t.toLowerCase());
+        gsap.to(S, {tgtY: sp.p[0] * -0.7, tgtX: 0.1, duration:.8, ease:'power2.out'});
+      }
+      if (drawer.value() > 4) drawer.set(shutY());
+      drawer.tune(1, 0.38); drawer.to(0);
+      openTl = gsap.timeline();
+      openTl.to(scrim, {opacity:1, duration:.25}, 0)
+            .from(panelBody.children, {opacity:0, y:14, duration:.4, stagger:.035, ease:'power2.out'}, .18);
+    }
+    document.getElementById('panelClose').focus();
+  }
+  function openPanel(i){ openSheet(SPOT_SHEET[i], i); }
+
+  /* Jede Schublade verkabelt ihre eigenen Knoepfe, weil der Inhalt neu gebaut wird. */
+  function wireSheet(key){
+    /* Beide Schreibweisen: im Formular stehen die Links zu AGB und
+       Datenschutz als data-sheet, verkabelt war nur data-drawer. Damit
+       oeffnete der Haken "Ich habe die AGB gelesen" nichts. */
+    panelBody.querySelectorAll('[data-sheet],[data-drawer]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        openSheet(a.getAttribute('data-sheet') || a.getAttribute('data-drawer'));
+      });
+    });
+    if (key === 'menu') {
+      panelBody.querySelectorAll('[data-go]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var go = b.getAttribute('data-go');
+          /* Praefix oeffnet ein Blatt, ohne Praefix wird zum Abschnitt gescrollt.
+             Stand 21.10.2026: Das Menue schickt "sheet:", geprueft wurde auf
+             "drawer:" -- und slice(6) hätte bei sieben Zeichen auch noch den
+             Doppelpunkt stehen lassen. Ergebnis: alles ab "Anlaesse" tat nichts.
+             Jetzt wird am Doppelpunkt getrennt, dann ist der Name egal. */
+          var dp = go.indexOf(':');
+          if (dp > -1) { openSheet(go.slice(dp + 1)); return; }
+          closePanel();
+          var el = document.getElementById(go);
+          if (el) setTimeout(function(){ el.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'}); }, 180);
+        });
+      });
+    }
+    if (key === 'anfrage') {
+      var chips = panelBody.querySelector('#anlassChips');
+      chips.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        chips.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      });
+      panelBody.querySelector('#anfrageForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var f = e.target, err = panelBody.querySelector('#frmErr'), miss = [];
+        if (!f.name.value.trim()) miss.push('dein Name');
+        if (!f.kontakt.value.trim()) miss.push('E-Mail oder Telefon');
+        if (!f.agb.checked) miss.push('die Bestätigung zu AGB und Datenschutz');
+        if (miss.length) {
+          err.hidden = false;
+          err.textContent = 'Es fehlt noch: ' + miss.join(', ') + '.';
+          return;
+        }
+        var chip = chips.querySelector('[aria-pressed="true"]');
+        var anlass = chip ? chip.textContent : 'eure Feier';
+        if (!chip) anlass = 'eure Feier';
+        var datum = f.datum.value ? new Date(f.datum.value).toLocaleDateString('de-DE',
+                    {day:'2-digit', month:'long', year:'numeric'}) : '';
+        var name = f.name.value.trim(), ort = f.ort.value.trim();
+        var kontakt = f.kontakt.value.trim(), nachricht = f.nachricht.value.trim();
+        var betreff = 'Fotobox-Anfrage – ' + anlass + (datum ? ' am ' + datum : '');
+        var text =
+          'Hallo Janis,\n\nich würde die Fotobox gerne für ' + anlass.toLowerCase() + ' buchen.\n\n' +
+          'Anlass:   ' + anlass + '\n' +
+          'Datum:    ' + (datum || 'noch offen') + '\n' +
+          'Ort:      ' + (ort || '–') + '\n' +
+          'Name:     ' + name + '\n' +
+          'Kontakt:  ' + kontakt + '\n' +
+          (nachricht ? '\n' + nachricht + '\n' : '') +
+          '\nViele Grüße\n' + name;
+        var mail = 'mailto:anfrage@fotobox-wangen.de?subject=' + encodeURIComponent(betreff) +
+                   '&body=' + encodeURIComponent(text);
+        var wa   = 'https://wa.me/4915202126006?text=' + encodeURIComponent(text);
+
+        panelBody.innerHTML = '<div class="ok"><h5>Fast geschafft, ' + esc(name) + '.</h5>' +
+          '<p>Deine Anfrage für ' + esc(anlass.toLowerCase()) + (datum ? ' am ' + esc(datum) : '') +
+          (ort ? ' in ' + esc(ort) : '') + ' ist fertig ausgefüllt. ' +
+          'Ein Klick noch, dann liegt sie bei Janis.</p>' +
+          '<a class="send" href="' + esc(wa) + '" target="_blank" rel="noopener">Per WhatsApp senden</a>' +
+          '<a class="send alt" href="' + esc(mail) + '">Als E-Mail senden</a>' +
+          '<p class="fine">Die E-Mail öffnet dein Mailprogramm – dort musst du sie noch abschicken.</p>' +
+          '<p class="fine">Lieber direkt sprechen? <a href="tel:+4915202126006">0152 02126006</a></p></div>';
+        if (!reduce) { gsap.from(panelBody.children, {opacity:0, y:12, duration:.4, ease:'power2.out'}); shoot(); }
+      });
+    }
+  }
+  function esc(t){ return String(t).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function closePanel(vel){
+    scrim.classList.remove('open');
+    hotNodes.forEach(function(n){ n.classList.remove('on'); });
+    screenMode = '';   /* naechstes Bild setzt den passenden Text */
+    if (openTl) openTl.kill();
+    gsap.to(scrim, {opacity:0, duration:.22});
+    if (reduce) { drawer.set(shutY()); return; }
+    /* Nach einem Schwung darf es leicht ueberschwingen, sonst nicht. */
+    drawer.tune(vel ? 0.85 : 1, vel ? 0.3 : 0.34);
+    drawer.to(shutY(), vel);
+  }
+  document.getElementById('panelClose').addEventListener('click', function(){ closePanel(); });
+  /* ---- Wischen zum Schliessen ----
+     Die Flaeche haengt 1:1 am Finger, bremst nach oben gummibandartig ab,
+     und beim Loslassen entscheidet nicht die Position, sondern wohin die
+     Bewegung traegt. Die Geschwindigkeit geht ohne Naht in die Feder. */
+  var swipe = null;
+  panel.addEventListener('pointerdown', function (e) {
+    if (reduce || wideMQ.matches) return;
+    if (e.target.closest('a,button,input,textarea,select,summary')) return;
+    if (panel.scrollTop > 0) return;
+    drawer.stop();
+    swipe = {y0:e.clientY, base:drawer.value(), hist:[[e.clientY, performance.now()]],
+             on:false, id:e.pointerId};
+  });
+  panel.addEventListener('pointermove', function (e) {
+    if (!swipe || e.pointerId !== swipe.id) return;
+    var d = e.clientY - swipe.y0;
+    if (!swipe.on) {
+      if (Math.abs(d) < 9) return;                 /* kleine Hysterese */
+      swipe.on = true;
+      try { panel.setPointerCapture(e.pointerId); } catch (err) {}
+    }
+    var hgt = panel.offsetHeight || 620;
+    var y = swipe.base + d;
+    if (y < 0) y = -rubber(-y, hgt);
+    drawer.set(y);
+    gsap.set(scrim, {opacity: Math.max(0, 1 - y / (hgt * 0.9))});
+    swipe.hist.push([e.clientY, performance.now()]);
+    if (swipe.hist.length > 6) swipe.hist.shift();
+  });
+  function releaseSwipe(){
+    if (!swipe) return;
+    var s = swipe; swipe = null;
+    if (!s.on) return;
+    var hh = s.hist, n = hh.length, vel = 0;
+    if (n > 1) {
+      var dt = (hh[n-1][1] - hh[0][1]) / 1000;
+      if (dt > 0.001) vel = (hh[n-1][0] - hh[0][0]) / dt;
+    }
+    if (drawer.value() + flickTo(vel) > shutY() * 0.3) { closePanel(vel); return; }
+    drawer.tune(Math.abs(vel) > 60 ? 0.8 : 1, 0.32);
+    drawer.to(0, vel);
+    gsap.to(scrim, {opacity:1, duration:.2});
+  }
+  panel.addEventListener('pointerup', releaseSwipe);
+  panel.addEventListener('pointercancel', releaseSwipe);
+
+  scrim.addEventListener('click', function(){ closePanel(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closePanel(); });
+  document.getElementById('mark').addEventListener('click', function(){
+    window.scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'});
+  });
+  document.querySelector('.menu').addEventListener('click', function(){ openSheet('menu'); });
+  document.querySelectorAll('[data-open]').forEach(function (el) {
+    el.addEventListener('click', function (e) { e.preventDefault(); openSheet(el.getAttribute('data-open')); });
+  });
+  }
+
+  try { boot(); } catch (err) { fallback(err); }
+})();
+</script>
+</body>
+</html>
