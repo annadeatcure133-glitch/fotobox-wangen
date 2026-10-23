@@ -25,9 +25,16 @@
 
 import nodemailer from 'nodemailer'
 
-const POSTFACH = process.env.MAIL_BENUTZER || 'anfrage@fotobox-wangen.de'
-const PASSWORT = process.env.MAIL_PASSWORT
-const AN = process.env.MAIL_AN || POSTFACH
+/* Rundherum abgeschnitten. Beim Einfuegen in ein Eingabefeld haengt
+   schnell ein Leerzeichen oder ein Zeilenumbruch hinten dran, und STRATO
+   antwortet darauf mit demselben 535 wie auf ein falsches Passwort --
+   man sucht dann stundenlang am falschen Ende. Ein Passwort, das
+   absichtlich auf ein Leerzeichen endet, waere ohnehin keines. */
+const sauber = (w) => String(w ?? '').trim()
+
+const POSTFACH = sauber(process.env.MAIL_BENUTZER) || 'anfrage@fotobox-wangen.de'
+const PASSWORT = sauber(process.env.MAIL_PASSWORT)
+const AN = sauber(process.env.MAIL_AN) || POSTFACH
 
 /* Zwei Anlaeufe, in dieser Reihenfolge.
    STRATO nennt 465 (SSL/TLS) den Weg fuer gewoehnliche Mailprogramme und
@@ -149,6 +156,10 @@ export default {
     }
     /* Die Kennungen stehen bewusst in der Antwort: sie verraten nichts
        Schuetzenswertes, ersparen aber das Suchen im Protokoll. */
-    return antwort({ ok: false, grund: 'versand', wege: pannen }, 502)
+    /* Die Adresse steht ohnehin im Impressum -- sie hier zu nennen
+       verraet nichts und zeigt sofort, ob in MAIL_BENUTZER das Richtige
+       steht. Das Passwort selbstverstaendlich nie, auch nicht seine
+       Laenge. */
+    return antwort({ ok: false, grund: 'versand', wege: pannen, benutzer: POSTFACH }, 502)
   },
 }
