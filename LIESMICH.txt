@@ -19,6 +19,24 @@ Was in dieser Fassung geaendert wurde
 - AGB: der Einschub "(nachfolgend Vermieter)" ist raus.
 - Impressum: Umsetzung der Website - Anna Schoener.
 
+Das Anfrageformular (seit 23.10.2026)
+-------------------------------------
+Frueher baute die Seite einen mailto:-Link. Der funktioniert nur, wenn
+auf dem Geraet ein Mailprogramm als Standard eingetragen ist -- wer
+seine Mail im Browser liest, klickte ins Leere, ohne es zu merken.
+
+Jetzt schickt das Formular an /api/anfrage. Die Funktion meldet sich
+bei smtp.strato.de an und legt die Anfrage im Postfach ab.
+
+In Vercel muessen dafuer unter Settings - Environment Variables stehen:
+
+    MAIL_BENUTZER   anfrage@fotobox-wangen.de
+    MAIL_PASSWORT   das Postfach-Passwort
+
+Fehlt das Passwort, faellt die Seite auf den alten Weg zurueck --
+WhatsApp und Mailprogramm, beides fertig ausgefuellt. Es geht also
+nichts verloren, aber der bequeme Weg fehlt.
+
 Veroeffentlichen
 ---------------
 Seit 23. Oktober 2026 haengt das Vercel-Projekt fotobox-live an dem

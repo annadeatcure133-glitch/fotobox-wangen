@@ -1,0 +1,9 @@
+{
+  "name": "fotobox-wangen",
+  "private": true,
+  "type": "module",
+  "description": "Website fotobox-wangen.de — statische Seite plus eine Funktion für das Anfrageformular",
+  "dependencies": {
+    "nodemailer": "^6.9.0"
+  }
+}

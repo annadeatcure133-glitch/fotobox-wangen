@@ -205,6 +205,9 @@ footer nav a:active{transform:scale(.96)}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
 .chips button{border:1px solid var(--rule);padding:8px 12px;font-size:11px;letter-spacing:.06em}
 .chips button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+/* Fuer Menschen nicht da, fuer Bots verlockend. Nicht display:none --
+   manche Bots ueberspringen genau das. */
+.honig{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .agbrow{display:flex;gap:9px;align-items:flex-start;font-size:11px;line-height:1.5;color:#2a2a2e;
   letter-spacing:0;text-transform:none}
 .agbrow input{width:17px;height:17px;flex:none;margin-top:1px;accent-color:var(--ink)}
@@ -573,6 +576,8 @@ var LEGAL = {
 <p>Mit Vercel besteht ein Auftragsverarbeitungsvertrag nach Art. 28 DSGVO. Dabei können personenbezogene Daten in die USA übermittelt werden. Vercel ist unter dem EU-US Data Privacy Framework zertifiziert; für Übermittlungen in die USA liegt damit ein Angemessenheitsbeschluss der Europäischen Kommission vor.</p>
 <b>3. Kontaktaufnahme</b>
 <p>Wenn Sie uns über das Formular oder per E-Mail schreiben, verarbeiten wir die angegebenen Daten, um Ihre Anfrage zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO bei einer Buchungsanfrage, sonst Art. 6 Abs. 1 lit. f DSGVO. Anfragen löschen wir, sobald sie erledigt sind und keine Aufbewahrungsfristen entgegenstehen.</p>
+<p>Technisch läuft das Formular so: Ihre Angaben gehen an eine kleine Funktion, die beim selben Anbieter wie die Website läuft (siehe Punkt 2), und zwar im Rechenzentrum Frankfurt am Main. Eine Übermittlung in die USA findet dabei nicht statt. Die Funktion speichert nichts; sie verschickt Ihre Angaben als E-Mail an unser Postfach und ist damit fertig. Das Postfach liegt bei der STRATO GmbH, Otto-Ostrowski-Straße 7, 10249 Berlin, die für uns die E-Mail-Dienste erbringt.</p>
+<p>Das Formular enthält ein für Sie unsichtbares Feld, das automatisierte Einträge erkennt, und begrenzt die Zahl der Absendungen je Anschluss. Das dient allein der Abwehr von Spam; es werden dafür keine Cookies gesetzt und keine Profile gebildet.</p>
 <b>4. Cookies und Reichweitenmessung</b>
 <p>Diese Website setzt keine Cookies und speichert nichts in Ihrem Browser. Es kommen keine Analyse-, Statistik- oder Tracking-Werkzeuge zum Einsatz und es findet keine Reichweitenmessung statt. Ein Einwilligungsbanner ist deshalb nicht erforderlich.</p><p>Beim Aufruf werden zwei technische Bestandteile von fremden Servern nachgeladen. Dabei wird Ihre IP-Adresse an den jeweiligen Anbieter übertragen:</p><p>— die Schrift IBM Plex Mono über Google Fonts (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland; eine Übermittlung an Google LLC in den USA ist dabei möglich);<br>— die Programmbibliotheken three.js und GSAP über den Dienst cdnjs (Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, USA).</p><p>Beide dienen allein der fehlerfreien und ansprechenden Darstellung dieser Seite. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO, unser berechtigtes Interesse an einer einheitlichen und funktionierenden Darstellung. Google LLC und Cloudflare, Inc. sind unter dem EU-US Data Privacy Framework zertifiziert.</p>
 <b>5. Fotos aus der Fotobox</b>
@@ -687,7 +692,7 @@ var LEGAL = {
     fragen:      {num:'05', t:'Häufige Fragen',     html:`<details class="qa"><summary>Wie viel Platz braucht die Fotobox?</summary><p>Eine ebene, trockene Fläche von mindestens 2 × 2 m. Mehr ist schöner, damit sich die Gäste davor bewegen können, nötig ist es nicht.</p></details><details class="qa"><summary>Braucht ihr Strom?</summary><p>Ja, eine normale 230-V-Steckdose in höchstens 10 Metern Entfernung. Verlängerungskabel bringe ich mit.</p></details><details class="qa"><summary>Wie sehen die Ausdrucke aus?</summary><p>Entweder als klassischer Hochkant-Streifen mit mehreren Bildern untereinander und eurem Logo darunter, oder im Querformat mit Namen, Datum und einem Grußtext. Das Layout ist komplett personalisierbar – ich gestalte es vorher nach euren Wünschen.</p></details><details class="qa"><summary>Wer baut die Box auf?</summary><p>Ich. Ich liefere sie, baue sie auf, erkläre sie kurz und baue sie nach der Feier wieder ab. Ihr müsst nichts vorbereiten außer Strom und Stellfläche.</p></details><details class="qa"><summary>Wie lange steht die Box bei uns?</summary><p>Es ist eine Tagesmiete: Die Box bleibt, so lange die Feier geht. Das Ende sprechen wir vorher ab, damit ich den Abbau einplanen kann.</p></details><details class="qa"><summary>Wie früh sollten wir buchen?</summary><p>Je früher desto besser – Samstage zwischen Mai und September sind zuerst weg. Kurzfristige Anfragen lohnen sich trotzdem, oft geht noch etwas.</p></details><details class="qa"><summary>Was kostet die Anfahrt?</summary><p>Bis 15 km ab Wangen im Allgäu ist die Anfahrt kostenlos. Liegt euer Ort weiter weg, nenne ich euch die Pauschale im Angebot. Lieferung, Aufbau, Einweisung und Abbau sind immer im Preis enthalten.</p></details><details class="qa"><summary>Geht die Box auch draußen?</summary><p>Ja. Den Platz wählt ihr. Ich empfehle einen überdachten, wind- und wettergeschützten Standort ohne direkte Sonne – Regen und pralle Sonne mag die Technik beide nicht, und die Bilder werden besser.</p></details><details class="qa"><summary>Muss jemand die Box bedienen?</summary><p>Nein. Die Gäste bedienen sie selbst, ich erkläre sie zu Beginn kurz. Requisiten stehen dabei.</p></details><details class="qa"><summary>Was bekommen wir am Ende?</summary><p>Alle Bilder werden sofort vor Ort gedruckt. Auf Wunsch gibt es zusätzlich eine Online-Galerie, über die ihr und eure Gäste die Bilder vier Wochen lang herunterladen könnt – für 39 €, im Paket mit 800 Bildern inklusive.</p></details><details class="qa"><summary>Wie läuft die Buchung ab?</summary><p>Ihr fragt über das Formular oder per Mail an, ich schicke euch ein Angebot und den Mietvertrag. Mit der Buchung werden 100 € Reservierungsgebühr fällig, die auf den Mietpreis angerechnet werden. Den Rest zahlt ihr am Veranstaltungstag oder nach Rechnung.</p></details><details class="qa"><summary>Was passiert, wenn wir absagen müssen?</summary><p>Ihr könnt jederzeit stornieren. Die 100 € Reservierungsgebühr behalte ich ein, weitere Kosten entstehen nicht. Findet ihr innerhalb eines Jahres einen Ersatztermin und ist der frei, rechne ich die Gebühr darauf an.</p></details>`},
     ueber:       {num:'06', t:'Über Janis',         html:`<p><img src="img/janis-portrait.webp" alt="Janis Schorer vor der Fotobox" class="pic-janis" width="468" height="468" decoding="async"></p><p>Hi, ich bin Janis.</p><p>Ich bin 20, komme aus Wangen im Allgäu und bin selbständiger Fotograf. Meine erste Hochzeit habe ich mit 16 fotografiert. Heute mache ich Social-Media-Content, arbeite beim Fernsehen – und nebenher vermiete ich die beste Fotobox im Allgäu.</p><p>Ich habe die Fotobox ins Leben gerufen, weil sie jede Feier um ein interaktives Erlebnis ergänzt: Die Gäste werden selbst kreativ, machen gemeinsam Fotos und nehmen den Ausdruck direkt mit nach Hause – eine Erinnerung, die bleibt.</p><p>Ich liefere die Box selbst, baue sie auf, erkläre sie kurz und baue sie am Ende wieder ab. Während eurer Veranstaltung bin ich telefonisch erreichbar.</p><p>Wenn ihr den ganzen Tag festgehalten haben wollt: Hochzeitsfotografie und Video gibt es bei mir aus einer Hand – auf Anfrage, zusammen mit der Box oder einzeln.</p>`},
     kontakt:     {num:'07', t:'Kontakt',            html:`<p>Janis Schorer<br>Fotobox Wangen<br>Johannes-Jung-Str. 4<br>88239 Wangen im Allgäu</p><p><a href="tel:+4915202126006">0152 02126006</a><br><a href="mailto:anfrage@fotobox-wangen.de">anfrage@fotobox-wangen.de</a></p><p class="fine">Am schnellsten geht es über das Anfrageformular – dann habe ich Datum und Ort gleich dabei.</p>`},
-    anfrage:     {num:'08', t:'Termin anfragen',    html:`<form class="frm" id="anfrageForm" novalidate><label>Paket<div class="chips" id="paketChips"><button type="button" aria-pressed="false">200 Bilder &middot; 299 &euro;</button><button type="button" aria-pressed="false">400 Bilder &middot; 379 &euro;</button><button type="button" aria-pressed="false">800 Bilder &middot; 499 &euro;</button><button type="button" aria-pressed="false">Noch unklar</button></div></label><label>Anlass<div class="chips" id="anlassChips"><button type="button" aria-pressed="false">Hochzeit</button><button type="button" aria-pressed="false">Firmenfeier</button><button type="button" aria-pressed="false">Geburtstag</button><button type="button" aria-pressed="false">Vereinsfest</button><button type="button" aria-pressed="false">Anderes</button></div></label><label>Datum der Feier<input type="date" name="datum"></label><label>Ort<input type="text" name="ort" placeholder="z. B. Wangen im Allgäu" autocomplete="address-level2"></label><label>Name<input type="text" name="name" autocomplete="name"></label><label>E-Mail oder Telefon<input type="text" name="kontakt" autocomplete="email"></label><label>Nachricht<textarea name="nachricht" placeholder="Wie viele Gäste, drinnen oder draußen, besondere Wünsche?"></textarea></label><label class="agbrow"><input type="checkbox" name="agb"><span>Ich habe die <a href="#" data-sheet="agb">AGB</a> und die <a href="#" data-sheet="datenschutz">Datenschutzerklärung</a> gelesen.</span></label><div class="err" id="frmErr" hidden></div><button type="submit" class="send">Anfrage senden</button><p class="fine">Im nächsten Schritt wählst du, ob die Anfrage per WhatsApp oder per E-Mail rausgeht – alles ist dann schon ausgefüllt. Am zuverlässigsten ist WhatsApp.</p></form>`},
+    anfrage:     {num:'08', t:'Termin anfragen',    html:`<form class="frm" id="anfrageForm" novalidate><label>Paket<div class="chips" id="paketChips"><button type="button" aria-pressed="false">200 Bilder &middot; 299 &euro;</button><button type="button" aria-pressed="false">400 Bilder &middot; 379 &euro;</button><button type="button" aria-pressed="false">800 Bilder &middot; 499 &euro;</button><button type="button" aria-pressed="false">Noch unklar</button></div></label><label>Anlass<div class="chips" id="anlassChips"><button type="button" aria-pressed="false">Hochzeit</button><button type="button" aria-pressed="false">Firmenfeier</button><button type="button" aria-pressed="false">Geburtstag</button><button type="button" aria-pressed="false">Vereinsfest</button><button type="button" aria-pressed="false">Anderes</button></div></label><label>Datum der Feier<input type="date" name="datum"></label><label>Ort<input type="text" name="ort" placeholder="z. B. Wangen im Allgäu" autocomplete="address-level2"></label><label>Name<input type="text" name="name" autocomplete="name"></label><label>E-Mail oder Telefon<input type="text" name="kontakt" autocomplete="email"></label><label>Nachricht<textarea name="nachricht" placeholder="Wie viele Gäste, drinnen oder draußen, besondere Wünsche?"></textarea></label><div class="honig" aria-hidden="true"><label>Webseite<input type="text" name="webseite" tabindex="-1" autocomplete="off"></label></div><label class="agbrow"><input type="checkbox" name="agb"><span>Ich habe die <a href="#" data-sheet="agb">AGB</a> und die <a href="#" data-sheet="datenschutz">Datenschutzerklärung</a> gelesen.</span></label><div class="err" id="frmErr" hidden></div><button type="submit" class="send">Anfrage senden</button><p class="fine">Im nächsten Schritt wählst du, ob die Anfrage per WhatsApp oder per E-Mail rausgeht – alles ist dann schon ausgefüllt. Am zuverlässigsten ist WhatsApp.</p></form>`},
     menu:        {num:'',   t:'Menü',               html:`<div class="nav-sheet"><button data-go="pakete">Pakete &amp; Preise</button><button data-go="galerie">So sieht das aus</button><button data-go="sheet:anlaesse">Anlässe</button><button data-go="sheet:ablauf">Ablauf &amp; Lieferung</button><button data-go="sheet:fragen">Häufige Fragen</button><button data-go="sheet:ueber">Über Janis</button><button data-go="sheet:anfrage">Termin anfragen</button></div>`},
     impressum:   {num:'',   t:'Impressum',          html:LEGAL.impressum},
     datenschutz: {num:'',   t:'Datenschutzerklärung', html:LEGAL.datenschutz},
@@ -1427,15 +1432,61 @@ var LEGAL = {
                    '&body=' + encodeURIComponent(text);
         var wa   = 'https://wa.me/4915202126006?text=' + encodeURIComponent(text);
 
-        panelBody.innerHTML = '<div class="ok"><h5>Fast geschafft, ' + esc(name) + '.</h5>' +
-          '<p>Deine Anfrage für ' + esc(anlass.toLowerCase()) + (datum ? ' am ' + esc(datum) : '') +
-          (ort ? ' in ' + esc(ort) : '') + ' ist fertig ausgefüllt. ' +
-          'Ein Klick noch, dann liegt sie bei Janis.</p>' +
-          '<a class="send" href="' + esc(wa) + '" target="_blank" rel="noopener">Per WhatsApp senden</a>' +
-          '<a class="send alt" href="' + esc(mail) + '">Als E-Mail senden</a>' +
-          '<p class="fine">Die E-Mail öffnet dein Mailprogramm – dort musst du sie noch abschicken.</p>' +
-          '<p class="fine">Lieber direkt sprechen? <a href="tel:+4915202126006">0152 02126006</a></p></div>';
-        if (!reduce) { gsap.from(panelBody.children, {opacity:0, y:12, duration:.4, ease:'power2.out'}); shoot(); }
+        function fertig(innen) {
+          panelBody.innerHTML = '<div class="ok">' + innen + '</div>';
+          if (!reduce) { gsap.from(panelBody.children, {opacity:0, y:12, duration:.4, ease:'power2.out'}); shoot(); }
+        }
+
+        /* Wenn der Versand ueber die Seite nicht geht, darf die Anfrage nicht
+           verloren sein. Dann kommt genau der Schirm von frueher: WhatsApp
+           und Mailprogramm, beides fertig ausgefuellt. */
+        function vonHand(hinweis) {
+          fertig((hinweis || '<h5>Fast geschafft, ' + esc(name) + '.</h5>') +
+            '<p>Deine Anfrage für ' + esc(anlass.toLowerCase()) + (datum ? ' am ' + esc(datum) : '') +
+            (ort ? ' in ' + esc(ort) : '') + ' ist fertig ausgefüllt. ' +
+            'Ein Klick noch, dann liegt sie bei Janis.</p>' +
+            '<a class="send" href="' + esc(wa) + '" target="_blank" rel="noopener">Per WhatsApp senden</a>' +
+            '<a class="send alt" href="' + esc(mail) + '">Als E-Mail senden</a>' +
+            '<p class="fine">Die E-Mail öffnet dein Mailprogramm – dort musst du sie noch abschicken.</p>' +
+            '<p class="fine">Lieber direkt sprechen? <a href="tel:+4915202126006">0152 02126006</a></p>');
+        }
+
+        var knopf = f.querySelector('button[type="submit"]');
+        knopf.disabled = true;
+        knopf.textContent = 'Wird gesendet …';
+        err.hidden = true;
+
+        /* Haengt der Server, wartet der Besucher nicht ewig -- nach zwoelf
+           Sekunden gibt es den Weg von Hand. */
+        var abbruch = ('AbortController' in window) ? new AbortController() : null;
+        var uhr = setTimeout(function(){ if (abbruch) abbruch.abort(); }, 12000);
+
+        fetch('/api/anfrage', {
+          method: 'POST',
+          headers: {'content-type': 'application/json'},
+          signal: abbruch ? abbruch.signal : undefined,
+          body: JSON.stringify({
+            paket: paket, anlass: anlass, datum: (datum || 'noch offen'),
+            ort: ort, name: name, kontakt: kontakt, nachricht: nachricht,
+            agb: true, webseite: f.webseite ? f.webseite.value : '',
+          }),
+        })
+        .then(function (r) { return r.json().then(function (j) { return {ok: r.ok, j: j}; }); })
+        .then(function (a) {
+          clearTimeout(uhr);
+          if (!a.ok || !a.j || a.j.ok !== true) throw new Error((a.j && a.j.grund) || 'versand');
+          fertig('<h5>Ist raus, ' + esc(name) + '.</h5>' +
+            '<p>Deine Anfrage für ' + esc(anlass.toLowerCase()) + (datum ? ' am ' + esc(datum) : '') +
+            (ort ? ' in ' + esc(ort) : '') + ' liegt jetzt bei Janis im Postfach. ' +
+            'Er meldet sich bei dir unter ' + esc(kontakt) + '.</p>' +
+            '<a class="send" href="' + esc(wa) + '" target="_blank" rel="noopener">Zusätzlich per WhatsApp</a>' +
+            '<p class="fine">Nichts gehört nach ein, zwei Tagen? ' +
+            '<a href="tel:+4915202126006">0152 02126006</a></p>');
+        })
+        .catch(function () {
+          clearTimeout(uhr);
+          vonHand('<h5>Fast geschafft, ' + esc(name) + '.</h5>');
+        });
       });
     }
   }
