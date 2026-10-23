@@ -19,30 +19,18 @@ Was in dieser Fassung geaendert wurde
 - AGB: der Einschub "(nachfolgend Vermieter)" ist raus.
 - Impressum: Umsetzung der Website - Anna Schoener.
 
-ACHTUNG beim Veroeffentlichen
------------------------------
-Eine frühere Fassung dieser Datei behauptete, man koenne eine neue ZIP
-im Vercel-Dashboard auf dasselbe Projekt ziehen. Das stimmt nicht.
-Vercel schreibt dazu ausdruecklich: "Each drop creates a new project."
-Jeder Drop legt also ein NEUES Projekt an.
+Veroeffentlichen
+---------------
+Seit 23. Oktober 2026 haengt das Vercel-Projekt fotobox-live an dem
+GitHub-Repository annadeatcure133-glitch/fotobox-wangen. Jeder Push auf
+main geht live; die Domains www.fotobox-wangen.de und fotobox-wangen.de
+bleiben dabei unberuehrt.
 
-Ein bestehendes Projekt aktualisiert man so:
+Nichts mehr von Hand hochladen. Die frueher hier beschriebenen Wege --
+vercel --prod und das Ziehen eines Ordners auf vercel.com/drop -- sind
+nicht mehr noetig. Der Drop waere sogar schaedlich: jeder Drop legt ein
+NEUES Projekt an ("Each drop creates a new project"), und die Domains
+muessten danach wieder umgehaengt werden.
 
-  npm i -g vercel
-  cd <dieser Ordner>
-  vercel --prod
-
-Beim ersten Mal: Team waehlen, dann "Link to existing project" mit JA
-beantworten und das bestehende Projekt auswaehlen. Die Domain bleibt.
-
-Oder - ohne Installation, dafuer mit Nacharbeit:
-  1. Ordner auf vercel.com/drop ziehen, neues Projekt entsteht
-  2. unter der neuen .vercel.app-Adresse pruefen
-  3. im ALTEN Projekt die Domains entfernen
-  4. im NEUEN Projekt dieselben Domains eintragen
-Das alte Projekt stehen lassen - es ist der Rueckweg.
-
-Eigene Domain
--------------
-Im Projekt unter Settings - Domains eintragen. Die DNS-Eintraege bei
-STRATO bleiben unveraendert, solange beide Projekte im selben Team sind.
+Vercel baut hier nichts: Framework-Voreinstellung "Other", kein Build
+Command. Die Seite wird so ausgeliefert, wie sie im Repository liegt.
