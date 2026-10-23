@@ -29,10 +29,20 @@ const POSTFACH = process.env.MAIL_BENUTZER || 'anfrage@fotobox-wangen.de'
 const PASSWORT = process.env.MAIL_PASSWORT
 const AN = process.env.MAIL_AN || POSTFACH
 
-/* STRATO empfiehlt fuer Mailprogramme ausdruecklich 465 mit SSL/TLS;
-   587 ist dort fuer Server-Relay gedacht. Nachgesehen am 23.10.2026:
-   strato.de/faq/mail/e-mailserver-adressen-ports-ssl-tls/ */
-const SERVER = { host: 'smtp.strato.de', port: 465, secure: true }
+/* Zwei Anlaeufe, in dieser Reihenfolge.
+   STRATO nennt 465 (SSL/TLS) den Weg fuer gewoehnliche Mailprogramme und
+   587 (STARTTLS) den fuer Server-Relay -- und genau ein Relay sind wir
+   hier. Welcher von beiden eine Anmeldung aus einem Rechenzentrum
+   durchlaesst, steht nirgends; am 23.10.2026 scheiterte 465 im ersten
+   Versuch. Also wird der Reihe nach probiert, und der erste, der traegt,
+   gewinnt. Mit MAIL_PORT laesst sich einer davon festnageln, sobald klar
+   ist welcher.
+   Nachgesehen: strato.de/faq/mail/e-mailserver-adressen-ports-ssl-tls/ */
+const HOST = process.env.MAIL_HOST || 'smtp.strato.de'
+const WEGE = process.env.MAIL_PORT
+  ? [{ host: HOST, port: Number(process.env.MAIL_PORT), secure: Number(process.env.MAIL_PORT) === 465 }]
+  : [{ host: HOST, port: 465, secure: true },
+     { host: HOST, port: 587, secure: false, requireTLS: true }]
 
 /* Eine einfache Bremse. Serverlos lebt das nur, solange die Instanz warm
    ist -- gegen einen entschlossenen Angreifer hilft das nicht, gegen die
@@ -106,28 +116,39 @@ export default {
       '\n— Diese Mail hat das Formular auf fotobox-wangen.de verschickt.\n' +
       'Antworten geht direkt: die Adresse des Anfragenden steht im Antwort-An.\n'
 
-    try {
-      const post = nodemailer.createTransport({
-        ...SERVER,
-        auth: { user: POSTFACH, pass: PASSWORT },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 15000,
-      })
-      await post.sendMail({
-        from: { name: 'Fotobox Wangen — Anfrage', address: POSTFACH },
-        to: AN,
-        /* Nur eine echt aussehende Adresse ins Antwort-An. Stand da eine
-           Telefonnummer, waere die Mail unzustellbar. */
-        replyTo: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(kontakt) ? kontakt : undefined,
-        subject: 'Fotobox-Anfrage – ' + anlass + (datum !== 'noch offen' ? ' am ' + datum : ''),
-        text,
-      })
-      return antwort({ ok: true })
-    } catch (err) {
-      /* Kein Passwort und keine Besucherdaten ins Protokoll. */
-      console.error('[anfrage] Versand fehlgeschlagen:', err && err.code, err && err.responseCode)
-      return antwort({ ok: false, grund: 'versand' }, 502)
+    const brief = {
+      from: { name: 'Fotobox Wangen — Anfrage', address: POSTFACH },
+      to: AN,
+      /* Nur eine echt aussehende Adresse ins Antwort-An. Stand da eine
+         Telefonnummer, waere die Mail unzustellbar. */
+      replyTo: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(kontakt) ? kontakt : undefined,
+      subject: 'Fotobox-Anfrage – ' + anlass + (datum !== 'noch offen' ? ' am ' + datum : ''),
+      text,
     }
+
+    const pannen = []
+    for (const weg of WEGE) {
+      try {
+        const post = nodemailer.createTransport({
+          ...weg,
+          auth: { user: POSTFACH, pass: PASSWORT },
+          connectionTimeout: 10000,
+          greetingTimeout: 10000,
+          socketTimeout: 15000,
+        })
+        await post.sendMail(brief)
+        console.log('[anfrage] verschickt über Port', weg.port)
+        return antwort({ ok: true })
+      } catch (err) {
+        /* Kein Passwort und keine Besucherdaten ins Protokoll -- nur die
+           Kennung, die sagt, woran es lag. */
+        const kennung = (err && err.code) || 'unbekannt'
+        console.error('[anfrage] Port ' + weg.port + ' gescheitert:', kennung, err && err.responseCode)
+        pannen.push(weg.port + ':' + kennung + (err && err.responseCode ? '/' + err.responseCode : ''))
+      }
+    }
+    /* Die Kennungen stehen bewusst in der Antwort: sie verraten nichts
+       Schuetzenswertes, ersparen aber das Suchen im Protokoll. */
+    return antwort({ ok: false, grund: 'versand', wege: pannen }, 502)
   },
 }
