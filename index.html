@@ -642,6 +642,33 @@ var LEGAL = {
 
   function boot() {
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Weich scrollen -- selbst gemacht.
+     Geprueft am 23.10.2026 auf der Live-Seite: window.scrollTo springt,
+     scrollIntoView mit behavior 'auto' springt, aber behavior 'smooth' tut
+     GAR NICHTS. Auf dieser Seite haengen zwanzig ScrollTrigger am Scroll,
+     und die heben das native Weichscrollen aus. Folge: die Menuepunkte
+     "Pakete & Preise" und "So sieht das aus" bewegten die Seite nicht.
+     Hier wird stattdessen Schritt fuer Schritt gescrollt -- jeder Schritt
+     ist ein gewoehnliches scrollTo, genau das, was ScrollTrigger auch beim
+     Wischen sieht, und damit vertraegt es sich.
+     Wer das wieder auf scrollIntoView umstellt, testet es auf der Live-
+     Seite nach, nicht nur oertlich: oertlich laden die Bibliotheken nicht,
+     und ohne sie funktioniert 'smooth' einwandfrei. */
+  function scrollenZu(ziel) {
+    var nach = typeof ziel === 'number'
+      ? ziel
+      : Math.round(ziel.getBoundingClientRect().top + window.scrollY);
+    if (reduce) { window.scrollTo(0, nach); return; }
+    var von = window.scrollY, t0 = 0, dauer = Math.min(700, 260 + Math.abs(nach - von) * 0.22);
+    requestAnimationFrame(function schritt(t) {
+      if (!t0) t0 = t;
+      var p = Math.min(1, (t - t0) / dauer);
+      var e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+      window.scrollTo(0, Math.round(von + (nach - von) * e));
+      if (p < 1) requestAnimationFrame(schritt);
+    });
+  }
   gsap.registerPlugin(ScrollTrigger);
 
   var narrow = window.innerWidth < 760;
@@ -1204,7 +1231,7 @@ var LEGAL = {
       if (S.dock < 0.7) return;
       if (e.target.closest('.topbar,.bottombar,.panel,.hot,a,button')) return;
       v.set(0,0,0); booth.localToWorld(v); var s = project(v);
-      if (Math.hypot(e.clientX - s.x, e.clientY - s.y) < 130) window.scrollTo({top:0, behavior:'smooth'});
+      if (Math.hypot(e.clientX - s.x, e.clientY - s.y) < 130) scrollenZu(0);
     });
 
     gsap.from('#cta', {opacity:0, y:26, duration:.7, ease:'power2.out', scrollTrigger:{trigger:'#cta', start:'top 88%'}});
@@ -1338,7 +1365,7 @@ var LEGAL = {
           if (dp > -1) { openSheet(go.slice(dp + 1)); return; }
           closePanel();
           var el = document.getElementById(go);
-          if (el) setTimeout(function(){ el.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'}); }, 180);
+          if (el) setTimeout(function(){ scrollenZu(el); }, 180);
         });
       });
     }
@@ -1475,7 +1502,7 @@ var LEGAL = {
   scrim.addEventListener('click', function(){ closePanel(); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closePanel(); });
   document.getElementById('mark').addEventListener('click', function(){
-    window.scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'});
+    scrollenZu(0);
   });
   /* Die Preisboxen antippbar machen. Sie stehen als <div> im Quelltext und
      werden hier erst zu Schaltflaechen -- laedt keine Bibliothek, laeuft
