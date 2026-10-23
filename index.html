@@ -95,6 +95,14 @@ h2 .k{display:inline-block;white-space:pre}
 .price .n{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
 .price .v{font-size:clamp(30px,8vw,44px);font-weight:500;letter-spacing:-.02em;margin:7px 0 3px;line-height:1}
 .price .d{font-size:11.5px;color:var(--ink-soft);line-height:1.6}
+/* Antippbar wird eine Preisbox erst durch boot(). Laedt keine Bibliothek,
+   bleibt sie ein stiller Kasten -- besser als ein Knopf, der nichts tut. */
+.price--klick{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.price--klick:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
+.price--klick:active{background:#f1f1f4}
+.price .waehlen{display:block;margin-top:14px;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink)}
+.price .waehlen::after{content:" \2192"}
 .center{text-align:center}
 .rail{display:flex;gap:10px;overflow-x:auto;padding:0 16px 4px;scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -652,7 +660,7 @@ var LEGAL = {
     fragen:      {num:'05', t:'Häufige Fragen',     html:`<details class="qa"><summary>Wie viel Platz braucht die Fotobox?</summary><p>Eine ebene, trockene Fläche von mindestens 2 × 2 m. Mehr ist schöner, damit sich die Gäste davor bewegen können, nötig ist es nicht.</p></details><details class="qa"><summary>Braucht ihr Strom?</summary><p>Ja, eine normale 230-V-Steckdose in höchstens 10 Metern Entfernung. Verlängerungskabel bringe ich mit.</p></details><details class="qa"><summary>Wie sehen die Ausdrucke aus?</summary><p>Entweder als klassischer Hochkant-Streifen mit mehreren Bildern untereinander und eurem Logo darunter, oder im Querformat mit Namen, Datum und einem Grußtext. Das Layout ist komplett personalisierbar – ich gestalte es vorher nach euren Wünschen.</p></details><details class="qa"><summary>Wer baut die Box auf?</summary><p>Ich. Ich liefere sie, baue sie auf, erkläre sie kurz und baue sie nach der Feier wieder ab. Ihr müsst nichts vorbereiten außer Strom und Stellfläche.</p></details><details class="qa"><summary>Wie lange steht die Box bei uns?</summary><p>Es ist eine Tagesmiete: Die Box bleibt, so lange die Feier geht. Das Ende sprechen wir vorher ab, damit ich den Abbau einplanen kann.</p></details><details class="qa"><summary>Wie früh sollten wir buchen?</summary><p>Je früher desto besser – Samstage zwischen Mai und September sind zuerst weg. Kurzfristige Anfragen lohnen sich trotzdem, oft geht noch etwas.</p></details><details class="qa"><summary>Was kostet die Anfahrt?</summary><p>Bis 15 km ab Wangen im Allgäu ist die Anfahrt kostenlos. Liegt euer Ort weiter weg, nenne ich euch die Pauschale im Angebot. Lieferung, Aufbau, Einweisung und Abbau sind immer im Preis enthalten.</p></details><details class="qa"><summary>Geht die Box auch draußen?</summary><p>Ja. Den Platz wählt ihr. Ich empfehle einen überdachten, wind- und wettergeschützten Standort ohne direkte Sonne – Regen und pralle Sonne mag die Technik beide nicht, und die Bilder werden besser.</p></details><details class="qa"><summary>Muss jemand die Box bedienen?</summary><p>Nein. Die Gäste bedienen sie selbst, ich erkläre sie zu Beginn kurz. Requisiten stehen dabei.</p></details><details class="qa"><summary>Was bekommen wir am Ende?</summary><p>Alle Bilder werden sofort vor Ort gedruckt. Auf Wunsch gibt es zusätzlich eine Online-Galerie, über die ihr und eure Gäste die Bilder vier Wochen lang herunterladen könnt – für 39 €, im Paket mit 800 Bildern inklusive.</p></details><details class="qa"><summary>Wie läuft die Buchung ab?</summary><p>Ihr fragt über das Formular oder per Mail an, ich schicke euch ein Angebot und den Mietvertrag. Mit der Buchung werden 100 € Reservierungsgebühr fällig, die auf den Mietpreis angerechnet werden. Den Rest zahlt ihr am Veranstaltungstag oder nach Rechnung.</p></details><details class="qa"><summary>Was passiert, wenn wir absagen müssen?</summary><p>Ihr könnt jederzeit stornieren. Die 100 € Reservierungsgebühr behalte ich ein, weitere Kosten entstehen nicht. Findet ihr innerhalb eines Jahres einen Ersatztermin und ist der frei, rechne ich die Gebühr darauf an.</p></details>`},
     ueber:       {num:'06', t:'Über Janis',         html:`<p><img src="img/janis-portrait.webp" alt="Janis Schorer vor der Fotobox" class="pic-janis" width="468" height="468" decoding="async"></p><p>Hi, ich bin Janis.</p><p>Ich bin 20, komme aus Wangen im Allgäu und bin selbständiger Fotograf. Meine erste Hochzeit habe ich mit 16 fotografiert. Heute mache ich Social-Media-Content, arbeite beim Fernsehen – und nebenher vermiete ich die beste Fotobox im Allgäu.</p><p>Ich habe die Fotobox ins Leben gerufen, weil sie jede Feier um ein interaktives Erlebnis ergänzt: Die Gäste werden selbst kreativ, machen gemeinsam Fotos und nehmen den Ausdruck direkt mit nach Hause – eine Erinnerung, die bleibt.</p><p>Ich liefere die Box selbst, baue sie auf, erkläre sie kurz und baue sie am Ende wieder ab. Während eurer Veranstaltung bin ich telefonisch erreichbar.</p><p>Wenn ihr den ganzen Tag festgehalten haben wollt: Hochzeitsfotografie und Video gibt es bei mir aus einer Hand – auf Anfrage, zusammen mit der Box oder einzeln.</p>`},
     kontakt:     {num:'07', t:'Kontakt',            html:`<p>Janis Schorer<br>Fotobox Wangen<br>Johannes-Jung-Str. 4<br>88239 Wangen im Allgäu</p><p><a href="tel:+4915202126006">0152 02126006</a><br><a href="mailto:anfrage@fotobox-wangen.de">anfrage@fotobox-wangen.de</a></p><p class="fine">Am schnellsten geht es über das Anfrageformular – dann habe ich Datum und Ort gleich dabei.</p>`},
-    anfrage:     {num:'08', t:'Termin anfragen',    html:`<form class="frm" id="anfrageForm" novalidate><label>Anlass<div class="chips" id="anlassChips"><button type="button" aria-pressed="false">Hochzeit</button><button type="button" aria-pressed="false">Firmenfeier</button><button type="button" aria-pressed="false">Geburtstag</button><button type="button" aria-pressed="false">Vereinsfest</button><button type="button" aria-pressed="false">Anderes</button></div></label><label>Datum der Feier<input type="date" name="datum"></label><label>Ort<input type="text" name="ort" placeholder="z. B. Wangen im Allgäu" autocomplete="address-level2"></label><label>Name<input type="text" name="name" autocomplete="name"></label><label>E-Mail oder Telefon<input type="text" name="kontakt" autocomplete="email"></label><label>Nachricht<textarea name="nachricht" placeholder="Wie viele Gäste, drinnen oder draußen, besondere Wünsche?"></textarea></label><label class="agbrow"><input type="checkbox" name="agb"><span>Ich habe die <a href="#" data-sheet="agb">AGB</a> und die <a href="#" data-sheet="datenschutz">Datenschutzerklärung</a> gelesen.</span></label><div class="err" id="frmErr" hidden></div><button type="submit" class="send">Anfrage senden</button><p class="fine">Im nächsten Schritt wählst du, ob die Anfrage per WhatsApp oder per E-Mail rausgeht – alles ist dann schon ausgefüllt. Am zuverlässigsten ist WhatsApp.</p></form>`},
+    anfrage:     {num:'08', t:'Termin anfragen',    html:`<form class="frm" id="anfrageForm" novalidate><label>Paket<div class="chips" id="paketChips"><button type="button" aria-pressed="false">200 Bilder &middot; 299 &euro;</button><button type="button" aria-pressed="false">400 Bilder &middot; 379 &euro;</button><button type="button" aria-pressed="false">800 Bilder &middot; 499 &euro;</button><button type="button" aria-pressed="false">Noch unklar</button></div></label><label>Anlass<div class="chips" id="anlassChips"><button type="button" aria-pressed="false">Hochzeit</button><button type="button" aria-pressed="false">Firmenfeier</button><button type="button" aria-pressed="false">Geburtstag</button><button type="button" aria-pressed="false">Vereinsfest</button><button type="button" aria-pressed="false">Anderes</button></div></label><label>Datum der Feier<input type="date" name="datum"></label><label>Ort<input type="text" name="ort" placeholder="z. B. Wangen im Allgäu" autocomplete="address-level2"></label><label>Name<input type="text" name="name" autocomplete="name"></label><label>E-Mail oder Telefon<input type="text" name="kontakt" autocomplete="email"></label><label>Nachricht<textarea name="nachricht" placeholder="Wie viele Gäste, drinnen oder draußen, besondere Wünsche?"></textarea></label><label class="agbrow"><input type="checkbox" name="agb"><span>Ich habe die <a href="#" data-sheet="agb">AGB</a> und die <a href="#" data-sheet="datenschutz">Datenschutzerklärung</a> gelesen.</span></label><div class="err" id="frmErr" hidden></div><button type="submit" class="send">Anfrage senden</button><p class="fine">Im nächsten Schritt wählst du, ob die Anfrage per WhatsApp oder per E-Mail rausgeht – alles ist dann schon ausgefüllt. Am zuverlässigsten ist WhatsApp.</p></form>`},
     menu:        {num:'',   t:'Menü',               html:`<div class="nav-sheet"><button data-go="pakete">Pakete &amp; Preise</button><button data-go="galerie">So sieht das aus</button><button data-go="sheet:anlaesse">Anlässe</button><button data-go="sheet:ablauf">Ablauf &amp; Lieferung</button><button data-go="sheet:fragen">Häufige Fragen</button><button data-go="sheet:ueber">Über Janis</button><button data-go="sheet:anfrage">Termin anfragen</button></div>`},
     impressum:   {num:'',   t:'Impressum',          html:LEGAL.impressum},
     datenschutz: {num:'',   t:'Datenschutzerklärung', html:LEGAL.datenschutz},
@@ -1301,6 +1309,11 @@ var LEGAL = {
   }
   function openPanel(i){ openSheet(SPOT_SHEET[i], i); }
 
+  /* Welches Paket angetippt wurde. Wird beim Oeffnen der Anfrage gelesen
+     und danach geleert, damit ein spaeterer Aufruf ueber das Menue nicht
+     eine alte Wahl mitschleppt. */
+  var paketWunsch = '';
+
   /* Jede Schublade verkabelt ihre eigenen Knoepfe, weil der Inhalt neu gebaut wird. */
   function wireSheet(key){
     /* Beide Schreibweisen: im Formular stehen die Links zu AGB und
@@ -1330,11 +1343,29 @@ var LEGAL = {
       });
     }
     if (key === 'anfrage') {
-      var chips = panelBody.querySelector('#anlassChips');
-      chips.addEventListener('click', function (e) {
-        var b = e.target.closest('button'); if (!b) return;
-        chips.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-      });
+      /* Anlass und Paket verhalten sich gleich: eine Reihe, eine Wahl. */
+      function reihe(id) {
+        var r = panelBody.querySelector(id);
+        r.addEventListener('click', function (e) {
+          var b = e.target.closest('button'); if (!b) return;
+          var schon = b.getAttribute('aria-pressed') === 'true';
+          r.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+          /* Nochmal tippen hebt die Wahl wieder auf. */
+          if (!schon) b.setAttribute('aria-pressed', 'true');
+        });
+        return r;
+      }
+      var chips = reihe('#anlassChips');
+      var pakete = reihe('#paketChips');
+
+      /* Kam die Anfrage ueber eine angetippte Preisbox, steht das Paket
+         schon fest. Danach den Merker leeren. */
+      if (paketWunsch) {
+        pakete.querySelectorAll('button').forEach(function (b) {
+          if (b.textContent.indexOf(paketWunsch) === 0) b.setAttribute('aria-pressed', 'true');
+        });
+        paketWunsch = '';
+      }
       panelBody.querySelector('#anfrageForm').addEventListener('submit', function (e) {
         e.preventDefault();
         var f = e.target, err = panelBody.querySelector('#frmErr'), miss = [];
@@ -1348,7 +1379,8 @@ var LEGAL = {
         }
         var chip = chips.querySelector('[aria-pressed="true"]');
         var anlass = chip ? chip.textContent : 'eure Feier';
-        if (!chip) anlass = 'eure Feier';
+        var pchip = pakete.querySelector('[aria-pressed="true"]');
+        var paket = pchip ? pchip.textContent : 'noch offen';
         var datum = f.datum.value ? new Date(f.datum.value).toLocaleDateString('de-DE',
                     {day:'2-digit', month:'long', year:'numeric'}) : '';
         var name = f.name.value.trim(), ort = f.ort.value.trim();
@@ -1357,6 +1389,7 @@ var LEGAL = {
         var text =
           'Hallo Janis,\n\nich würde die Fotobox gerne für ' + anlass.toLowerCase() + ' buchen.\n\n' +
           'Anlass:   ' + anlass + '\n' +
+          'Paket:    ' + paket + '\n' +
           'Datum:    ' + (datum || 'noch offen') + '\n' +
           'Ort:      ' + (ort || '–') + '\n' +
           'Name:     ' + name + '\n' +
@@ -1444,6 +1477,34 @@ var LEGAL = {
   document.getElementById('mark').addEventListener('click', function(){
     window.scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'});
   });
+  /* Die Preisboxen antippbar machen. Sie stehen als <div> im Quelltext und
+     werden hier erst zu Schaltflaechen -- laedt keine Bibliothek, laeuft
+     dieser Code nicht, und dann bleiben sie ein stiller Kasten statt eines
+     Knopfes, der ins Leere greift. */
+  document.querySelectorAll('.prices .price').forEach(function (box) {
+    var name = box.querySelector('.n'), preis = box.querySelector('.v');
+    if (!name || !preis) return;
+    box.className += ' price--klick';
+    box.setAttribute('role', 'button');
+    box.setAttribute('tabindex', '0');
+    box.setAttribute('aria-label', name.textContent.trim() + ' für ' +
+      preis.textContent.trim() + ' anfragen');
+    var hinweis = document.createElement('span');
+    hinweis.className = 'waehlen';
+    hinweis.textContent = 'Dieses Paket anfragen';
+    box.appendChild(hinweis);
+    function waehlen() {
+      paketWunsch = name.textContent.trim();
+      openSheet('anfrage');
+    }
+    box.addEventListener('click', waehlen);
+    /* Mit der Tastatur erreichbar: ein role="button" muss auf Enter und
+       Leertaste hoeren, sonst ist die Rolle eine Behauptung. */
+    box.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); waehlen(); }
+    });
+  });
+
   document.querySelector('.menu').addEventListener('click', function(){ openSheet('menu'); });
   document.querySelectorAll('[data-open]').forEach(function (el) {
     el.addEventListener('click', function (e) { e.preventDefault(); openSheet(el.getAttribute('data-open')); });
